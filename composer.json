@@ -1,0 +1,15 @@
+{
+    "name": "las-xd/management-system",
+    "description": "Hệ thống quản lý phòng thí nghiệm chuyên ngành xây dựng",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "bramus/router": "~1.6",
+        "mpdf/mpdf": "^8.1"
+    }
+}
