@@ -1,17 +1,17 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Khởi tạo Router
 $router = new \Bramus\Router\Router();
 
-// Định nghĩa đường dẫn trang chủ
-$router->get('/', function() {
-    echo "<h1>Chào mừng bạn đến với Hệ thống LAS-XD</h1>";
-});
+// Auth Routes
+$router->get('/login', '\App\Controllers\AuthController@showLoginForm');
+$router->post('/login', '\App\Controllers\AuthController@login');
+$router->get('/logout', '\App\Controllers\AuthController@logout');
 
-// Định nghĩa đường dẫn Quản lý nhân viên
+// Employee Management (Chỉ Admin/Trưởng phòng mới được vào)
 $router->get('/nhan-vien', function() {
-    echo "Trang danh sách nhân viên";
+    $controller = new \App\Controllers\UserController();
+    $controller->index();
 });
 
 $router->run();
