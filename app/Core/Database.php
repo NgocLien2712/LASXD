@@ -1,13 +1,16 @@
 <?php
+
 namespace App\Core;
 
 use PDO;
 use PDOException;
 
-class Database {
+class Database
+{
     private static $instance = null;
 
-    public static function getConnection() {
+    public static function getConnection()
+    {
         if (self::$instance === null) {
             // Load biến môi trường từ file .env
             $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
@@ -19,14 +22,14 @@ class Database {
                 $user = $_ENV['DB_USER'];
                 $pass = $_ENV['DB_PASS'];
 
+                // Thay đổi từ mysql sang pgsql
                 self::$instance = new PDO(
-                    "mysql:host=$host;dbname=$db;charset=utf8mb4",
+                    "pgsql:host=$host;port=5432;dbname=$db", // Cổng mặc định của Postgres là 5432
                     $user,
                     $pass,
                     [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                        PDO::ATTR_EMULATE_PREPARES => false,
                     ]
                 );
             } catch (PDOException $e) {
