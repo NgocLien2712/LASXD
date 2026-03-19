@@ -32,7 +32,7 @@
                             <td><?= $emp['nv_tendn'] ?></td>
                             <td><?= $emp['nv_ten'] ?></td>
                             <td><?= $emp['nv_sdt'] ?></td>
-                            <td><span class="badge bg-info text-dark"><?= $emp['cv_ten'] ?></span></td>
+                            <td><span class="badge bg-info text-dark"><?= $emp['role_name'] ?></span></td>
                             <td>
                                 <button class="btn btn-sm btn-warning">Sửa</button>
                                 <button class="btn btn-sm btn-danger">Xóa</button>

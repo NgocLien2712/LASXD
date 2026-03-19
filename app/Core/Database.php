@@ -21,10 +21,10 @@ class Database
                 $db   = $_ENV['DB_NAME'];
                 $user = $_ENV['DB_USER'];
                 $pass = $_ENV['DB_PASS'];
+                $port = $_ENV['DB_PORT'] ?? 5432;
 
-                // Thay đổi từ mysql sang pgsql
                 self::$instance = new PDO(
-                    "pgsql:host=$host;port=5432;dbname=$db", // Cổng mặc định của Postgres là 5432
+                    "pgsql:host=$host;port=$port;dbname=$db", 
                     $user,
                     $pass,
                     [

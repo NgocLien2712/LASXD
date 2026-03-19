@@ -14,15 +14,17 @@ class AuthController extends BaseController {
         $userModel = new User();
         $user = $userModel->findByUsername($username);
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user['nv_matkhau'])) {
             session_start();
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['full_name'];
-            $_SESSION['user_role'] = $user['role_name'];
-            
+            $_SESSION['user_id'] = $user['nv_ma'];
+            $_SESSION['user_name'] = $user['nv_ten'];
+            $_SESSION['user_role'] = $user['role_name'] ?? 'Khách';
+
             header("Location: /dashboard");
+            exit;
         } else {
             header("Location: /login?error=1");
+            exit;
         }
     }
 

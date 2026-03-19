@@ -55,7 +55,7 @@
             <div class="card login-card p-4">
                 <div class="card-body">
                     <div class="text-center">
-                      <img src="../../public/img/logo1.png" class="rounded" alt="logo" width="200">
+                        <img src="/img/logolasxd.png" class="rounded" alt="logo" width="200">
                         <h4 class="company-name text-uppercase">LAS-XD</h4>
                     </div>
 
