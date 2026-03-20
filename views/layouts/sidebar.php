@@ -6,8 +6,8 @@
         <li class="<?= ($currentPage == 'du-an') ? 'active' : '' ?>">
             <a href="/du-an"><i class="fas fa-building"></i> Quản lý Dự án</a>
         </li>
-        <li class="<?= ($currentPage == 'doi-tac') ? 'active' : '' ?>">
-            <a href="/doi-tac"><i class="fas fa-file-signature"></i> Quản lý Đối tác</a>
+        <li class="<?= ($currentPage == 'don-vi') ? 'active' : '' ?>">
+            <a href="/don-vi"><i class="fas fa-file-signature"></i> Quản lý Đơn vị</a>
         </li>
         <li class="<?= ($currentPage == 'bieu-mau') ? 'active' : '' ?>">
             <a href="/bieu-mau"><i class="fas fa-file-signature"></i> Tiêu chuẩn Thí nghiệm</a>

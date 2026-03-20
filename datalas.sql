@@ -6,8 +6,9 @@ DROP TABLE IF EXISTS phan_cong_cong_viec CASCADE;
 DROP TABLE IF EXISTS phieu_yeu_cau CASCADE;
 DROP TABLE IF EXISTS bieu_mau_tieu_chuan CASCADE;
 DROP TABLE IF EXISTS hop_dong CASCADE;
+DROP TABLE IF EXISTS du_an_don_vi CASCADE;
 DROP TABLE IF EXISTS du_an CASCADE;
-DROP TABLE IF EXISTS doi_tac CASCADE;
+DROP TABLE IF EXISTS don_vi CASCADE;
 DROP TABLE IF EXISTS nhan_vien CASCADE;
 DROP TABLE IF EXISTS chuc_vu CASCADE;
 
@@ -32,12 +33,12 @@ CREATE TABLE nhan_vien (
 );
 
 -- Bảng Đối tác (Chủ đầu tư, Nhà thầu, Đơn vị tư vấn)
-CREATE TABLE doi_tac (
-    dt_ma SERIAL PRIMARY KEY,
-    dt_ten VARCHAR(255) NOT NULL,
-    dt_mst VARCHAR(20), -- Mã số thuế
-    dt_diachi TEXT,
-    dt_loai VARCHAR(50) -- Ví dụ: Chủ đầu tư, Nhà thầu
+CREATE TABLE don_vi (
+    dv_ma SERIAL PRIMARY KEY,
+    dv_ten VARCHAR(255) NOT NULL,
+    dv_mst VARCHAR(20), -- Mã số thuế
+    dv_diachi TEXT,
+    dv_loai VARCHAR(50) -- Ví dụ: Chủ đầu tư, Nhà thầu
 );
 
 -- Bảng Dự án / Công trình (Nơi diễn ra thí nghiệm)
@@ -45,8 +46,16 @@ CREATE TABLE du_an (
     da_ma SERIAL PRIMARY KEY,
     da_ten VARCHAR(255) NOT NULL,
     da_diachi TEXT,
-    dt_ma_chudautu INT REFERENCES doi_tac(dt_ma),
+    dt_ma_chudautu INT REFERENCES don_vi(dv_ma),
     da_ngay_bat_dau DATE DEFAULT CURRENT_DATE
+);
+
+-- Bảng trung gian Dự án - Đơn vị (Liên kết nhiều-nhiều với vai trò)
+CREATE TABLE du_an_don_vi (
+    da_ma INT REFERENCES du_an(da_ma) ON DELETE CASCADE,
+    dv_ma INT REFERENCES don_vi(dv_ma) ON DELETE CASCADE,
+    vai_tro VARCHAR(100) NOT NULL, -- Ví dụ: Chủ đầu tư, Nhà thầu, Tư vấn
+    PRIMARY KEY (da_ma, dv_ma)
 );
 
 -- Bảng Biểu mẫu & Tiêu chuẩn (Lưu công thức thí nghiệm)
@@ -82,7 +91,29 @@ CREATE TABLE ket_qua_thi_nghiem (
     ngay_ky_duyet DATE
 );
 
--- =============================================================
+
+
+--Bảng mẫu thi nghiem
+CREATE TABLE mau_thi_nghiem (
+    mtn_ma SERIAL PRIMARY KEY,
+    pyc_ma INTEGER NOT NULL,
+    mtn_ten VARCHAR(255) NOT NULL,       -- Ví dụ: Bê tông thương phẩm mác 250
+    mtn_quy_cach VARCHAR(100),           -- Ví dụ: Hình trụ 15x15x15 cm
+    mtn_so_luong INTEGER DEFAULT 1,      -- Số lượng mẫu (VD: 3 viên)
+    mtn_ngay_lay DATE,                   -- Ngày đúc/lấy mẫu hiện trường
+    mtn_ghi_chu TEXT,
+    CONSTRAINT fk_pyc FOREIGN KEY (pyc_ma) REFERENCES phieu_yeu_cau(pyc_ma) ON DELETE CASCADE
+);
+
+CREATE TABLE chi_dinh_phep_thu (
+    cdpt_ma SERIAL PRIMARY KEY,
+    mtn_ma INTEGER NOT NULL,
+    ten_phep_thu VARCHAR(255) NOT NULL, -- VD: Thử cường độ nén
+    tieu_chuan VARCHAR(100),            -- VD: TCVN 3118:2022
+    cdpt_ghi_chu TEXT,
+    CONSTRAINT fk_mtn FOREIGN KEY (mtn_ma) REFERENCES mau_thi_nghiem(mtn_ma) ON DELETE CASCADE
+);
+=============================================================
 -- 3. CHÈN DỮ LIỆU MẪU ĐỂ TEST GIAO DIỆN
 -- =============================================================
 
@@ -94,7 +125,7 @@ INSERT INTO nhan_vien (nv_tendn, nv_matkhau, nv_ten, cv_ma) VALUES
 ('truongphong', '$2y$12$dsVJ51hqk4dJisoUrqZb1Ob9FfA5BlnF9KNhUZWh6oQ6QVVQzdNAe', 'Nguyễn Văn Trưởng', 2),
 ('kythuat01', '$2y$12$dsVJ51hqk4dJisoUrqZb1Ob9FfA5BlnF9KNhUZWh6oQ6QVVQzdNAe', 'Lê Văn Thử', 3);
 
-INSERT INTO doi_tac (dt_ten, dt_loai) VALUES ('Tập đoàn Xây dựng A', 'Nhà thầu'), ('Sở Giao thông Vận tải', 'Chủ đầu tư');
+INSERT INTO don_vi (dv_ten, dv_loai) VALUES ('Tập đoàn Xây dựng A', 'Nhà thầu'), ('Sở Giao thông Vận tải', 'Chủ đầu tư');
 
 INSERT INTO bieu_mau_tieu_chuan (bm_ky_hieu, bm_ten_phep_thu, bm_cong_thuc) VALUES 
 ('TCVN 7570:2006', 'Thử cốt liệu cho bê tông', '{"rong": 0.5, "chat": "da"}'),

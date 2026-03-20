@@ -3,133 +3,143 @@
 namespace App\Controllers;
 
 use App\Models\DuAn;
+use App\Models\DonVi;
 
 class DuAnController extends BaseController
 {
 
-    public function index() {
-        $this->checkAuth();
-        $keyword = $_GET['keyword'] ?? ''; // Lấy từ khóa
-
-        $duAnModel = new DuAn();
-        $danhSachDuAn = $duAnModel->getAll($keyword);
-
-        return $this->render('du-an/index', [
-            'title' => 'Quản lý Dự án/Công trình',
-            'danhSachDuAn' => $danhSachDuAn,
-            'keyword' => $keyword // Truyền ra view
-        ]);
-    }
-    // Hàm 1: Hiển thị giao diện Form
-    public function create()
-    {
-        $this->checkAuth();
-
-        $duAnModel = new DuAn();
-        $danhSachDoiTac = $duAnModel->getAllDoiTac();
-
-        return $this->render('du-an/create', [
-            'title' => 'Thêm Dự án mới',
-            'danhSachDoiTac' => $danhSachDoiTac
-        ]);
-    }
-
-    // Hàm 2: Nhận dữ liệu từ Form và Lưu vào Database
     public function store()
     {
         $this->checkAuth();
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'da_ten' => $_POST['da_ten'] ?? '',
-                'da_diachi' => $_POST['da_diachi'] ?? '',
-                'dt_ma_chudautu' => !empty($_POST['dt_ma_chudautu']) ? $_POST['dt_ma_chudautu'] : null,
-                'da_ngay_bat_dau' => !empty($_POST['da_ngay_bat_dau']) ? $_POST['da_ngay_bat_dau'] : date('Y-m-d')
+            $duAnModel = new DuAn();
+
+            // 1. Lưu thông tin Dự án
+            $da_ma = $duAnModel->insertProject(
+                $_POST['da_ma_hieu'],
+                $_POST['da_ten'],
+                $_POST['da_diachi'],
+                $_POST['da_ngay_bat_dau']
+            );
+
+            // 2. Danh sách các vai trò được gửi từ Form
+            $roles = [
+                'Ban quản lý dự án' => $_POST['dv_bqlda'] ?? '',
+                'Nhà thầu thi công' => $_POST['dv_nhathautc'] ?? '',
+                'Tư vấn giám sát'   => $_POST['dv_tvgs'] ?? '',
+                'Chủ đầu tư'        => $_POST['dv_chudautu'] ?? '',
+                'Nhà thầu chính'    => $_POST['dv_nhathauchinh'] ?? '',
+                'Nhà thầu phụ'      => $_POST['dv_nhathauphu'] ?? ''
             ];
 
-            $duAnModel = new DuAn();
-            if ($duAnModel->insert($data)) {
-                // Lưu thành công thì chuyển hướng về trang danh sách dự án
-                header('Location: /du-an');
-                exit;
-            } else {
-                echo "Có lỗi xảy ra khi lưu vào cơ sở dữ liệu!";
+            // 3. Lưu từng vai trò (nếu có chọn) vào bảng trung gian
+            foreach ($roles as $vai_tro => $dv_ma) {
+                if (!empty($dv_ma)) {
+                    $duAnModel->insertProjectRole($da_ma, $dv_ma, $vai_tro);
+                }
             }
+
+            header('Location: /du-an');
+            exit;
         }
     }
 
-    // Hiển thị Form sửa với dữ liệu cũ
-    public function edit() {
+    public function index()
+    {
         $this->checkAuth();
-        
-        // Lấy ID từ thanh địa chỉ (ví dụ: /du-an/sua?id=5)
+        $duAnModel = new DuAn();
+        $donViModel = new DonVi();
+
+        $keyword = $_GET['keyword'] ?? '';
+
+        $danhSachDuAn = $duAnModel->getAllWithNhaThau($keyword);
+        $danhSachDonVi = $donViModel->getAll();
+
+        return $this->render('du-an/index', [
+            'danhSachDuAn' => $danhSachDuAn,
+            'danhSachDonVi' => $danhSachDonVi,
+            'keyword' => $keyword
+        ]);
+    }
+
+    public function delete()
+    {
+        $this->checkAuth();
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $duAnModel = new DuAn();
+            $duAnModel->delete($id);
+        }
+        header('Location: /du-an');
+        exit;
+    }
+
+    public function edit()
+    {
+        $this->checkAuth();
         $id = $_GET['id'] ?? null;
         if (!$id) {
-            header('Location: /du-an'); // Không có ID thì đuổi về trang danh sách
+            header('Location: /du-an');
             exit;
         }
 
         $duAnModel = new DuAn();
-        $duAn = $duAnModel->getById($id); // Lấy data dự án cũ
-        
+        $donViModel = new DonVi();
+
+        $duAn = $duAnModel->getById($id);
         if (!$duAn) {
-            echo "Không tìm thấy dự án này trong hệ thống!";
+            header('Location: /du-an');
             exit;
         }
 
-        $danhSachDoiTac = $duAnModel->getAllDoiTac();
+        $roles = $duAnModel->getRolesByProjectId($id); // Lấy các đơn vị đã gán
+        $danhSachDonVi = $donViModel->getAll(); // Danh sách để đổ vào <select>
 
         return $this->render('du-an/edit', [
-            'title' => 'Cập nhật Dự án',
             'duAn' => $duAn,
-            'danhSachDoiTac' => $danhSachDoiTac
+            'roles' => $roles,
+            'danhSachDonVi' => $danhSachDonVi
         ]);
     }
 
-    // Xử lý lưu dữ liệu Cập nhật
-    public function update() {
+    public function update()
+    {
         $this->checkAuth();
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['da_ma'] ?? null; // Lấy ID ẩn từ Form gửi lên
-            
-            $data = [
-                'da_ten' => $_POST['da_ten'] ?? '',
-                'da_diachi' => $_POST['da_diachi'] ?? '',
-                'dt_ma_chudautu' => !empty($_POST['dt_ma_chudautu']) ? $_POST['dt_ma_chudautu'] : null,
-                'da_ngay_bat_dau' => !empty($_POST['da_ngay_bat_dau']) ? $_POST['da_ngay_bat_dau'] : null
-            ];
+            $da_ma = $_POST['da_ma'] ?? null;
+            if ($da_ma) {
+                $duAnModel = new DuAn();
 
-            $duAnModel = new DuAn();
-            if ($id && $duAnModel->update($id, $data)) {
-                header('Location: /du-an'); // Xong thì quay về danh sách
-                exit;
-            } else {
-                echo "Có lỗi xảy ra khi cập nhật!";
-            }
-        }
-    }
+                // 1. Cập nhật thông tin cơ bản
+                $duAnModel->updateProject(
+                    $da_ma,
+                    $_POST['da_ma_hieu'],
+                    $_POST['da_ten'],
+                    $_POST['da_diachi'],
+                    $_POST['da_ngay_bat_dau']
+                );
 
-    // Xử lý logic khi người dùng bấm nút Xóa
-    public function delete() {
-        $this->checkAuth();
-        
-        $id = $_GET['id'] ?? null;
-        
-        if ($id) {
-            $duAnModel = new DuAn();
-            // Gọi hàm xóa trong Model
-            if ($duAnModel->delete($id)) {
-                // Tùy chọn: Bạn có thể lưu một thông báo (Flash Message) vào Session ở đây để hiện thông báo Xóa thành công
-            } else {
-                // Nếu không xóa được (có thể do vướng khóa ngoại)
-                echo "<script>alert('Không thể xóa dự án này vì đang có phiếu yêu cầu liên quan!'); window.location.href='/du-an';</script>";
-                exit;
+                // 2. Xóa các đơn vị cũ trong bảng du_an_don_vi
+                $duAnModel->clearProjectRoles($da_ma);
+
+                // 3. Insert lại các đơn vị mới
+                $rolesToSave = [
+                    'Ban quản lý dự án' => $_POST['dv_bqlda'] ?? '',
+                    'Nhà thầu thi công' => $_POST['dv_nhathautc'] ?? '',
+                    'Tư vấn giám sát'   => $_POST['dv_tvgs'] ?? '',
+                    'Chủ đầu tư'        => $_POST['dv_chudautu'] ?? '',
+                    'Nhà thầu chính'    => $_POST['dv_nhathauchinh'] ?? '',
+                    'Nhà thầu phụ'      => $_POST['dv_nhathauphu'] ?? ''
+                ];
+
+                foreach ($rolesToSave as $vai_tro => $dv_ma) {
+                    if (!empty($dv_ma)) {
+                        $duAnModel->insertProjectRole($da_ma, $dv_ma, $vai_tro);
+                    }
+                }
             }
+            header('Location: /du-an');
+            exit;
         }
-        
-        // Xong xuôi thì tự động quay về trang danh sách
-        header('Location: /du-an');
-        exit;
     }
 }
