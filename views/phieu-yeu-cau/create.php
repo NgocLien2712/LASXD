@@ -8,38 +8,39 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
 
         <form action="/phieu-yeu-cau/luu" method="POST" class="bg-white p-4 shadow-sm rounded-3 border-top border-primary border-3">
             <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label fw-bold">Số phiếu <span class="text-danger">*</span></label>
-                    <input type="text" name="pyc_so_phieu" class="form-control" placeholder="Ví dụ: PYC-2026-001" required>
-                </div>
-
-                <div class="col-md-8">
-                    <label class="form-label fw-bold">Dự án / Công trình <span class="text-danger">*</span></label>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Thuộc Dự án / Công trình <span class="text-danger">*</span></label>
                     <select name="da_ma" id="select-du-an" class="form-select" required>
-                        <option value="">-- Chọn dự án hoặc gõ để tìm kiếm --</option>
-                        <?php foreach ($danhSachDuAn as $da): ?>
-                            <option value="<?= $da['da_ma'] ?>"><?= htmlspecialchars($da['da_ten']) ?></option>
-                        <?php endforeach; ?>
+                        <option value="">-- Chọn dự án --</option>
+                        <?php if (!empty($danhSachDuAn)): ?>
+                            <?php foreach ($danhSachDuAn as $da): ?>
+                                <option value="<?= $da['da_ma'] ?>">
+                                    <?= htmlspecialchars(($da['da_ma_hieu'] ?? '') . ' - ' . $da['da_ten']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="" disabled>Chưa có dự án nào trong hệ thống</option>
+                        <?php endif; ?>
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label fw-bold">Ngày nhận mẫu</label>
-                    <input type="date" name="pyc_ngay_nhan_mau" class="form-control" value="<?= date('Y-m-d') ?>">
+                    <input type="date" name="pyc_ngay_nhan_mau" class="form-control" value="<?= date('Y-m-d') ?>" required>
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-bold">Người lập phiếu</label>
-                    <input type="text" class="form-control bg-light" value="<?= $_SESSION['user']['nv_ten'] ?? 'Lỗi session' ?>" readonly>
-                    <input type="hidden" name="nv_lap_phieu" value="<?= $_SESSION['user']['nv_ma'] ?? '' ?>">
-                </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label fw-bold">Trạng thái ban đầu</label>
                     <select name="pyc_trang_thai" class="form-select">
                         <option value="Mới tạo">Mới tạo</option>
                         <option value="Đang chờ mẫu">Đang chờ mẫu</option>
                     </select>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <div class="alert alert-info py-2 mb-0" style="font-size: 0.9rem;">
+                        <i class="fas fa-info-circle me-1"></i> Số phiếu và thông tin người lập sẽ được hệ thống tạo tự động khi bạn bấm Lưu.
+                    </div>
                 </div>
 
                 <div class="col-12 mt-4 border-top pt-3">

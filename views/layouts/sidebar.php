@@ -18,5 +18,17 @@
         <li class="<?= ($currentPage == 'nhan-vien') ? 'active' : '' ?>">
             <a href="/nhan-vien"><i class="fas fa-users-cog"></i> Nhân sự & Phân quyền</a>
         </li>
+
+        <li class="<?= ($currentPage == 'cau-hinh') ? 'active' : '' ?>">
+            <a href="/cau-hinh"><i class="fas fa-cogs"></i> Cấu hình Thí nghiệm</a>
+        </li>
+
+        <li class="<?= ($currentPage == 'danh-muc') ? 'active' : '' ?>">
+            <a href="/danh-muc"><i class="fas fa-layer-group"></i> Danh mục vật liệu</a>
+        </li>
     </ul>
+</nav>
+</a>
+</li>
+</ul>
 </nav>

@@ -49,9 +49,14 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                                         <td><span class="text-truncate d-inline-block" style="max-width: 200px;"><?= htmlspecialchars($da['da_diachi']) ?></span></td>
                                         <td><?= htmlspecialchars($da['nha_thau_thi_cong'] ?? 'Chưa xác định') ?></td>
                                         <td><?= date('d/m/Y', strtotime($da['da_ngay_bat_dau'])) ?></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
-                                            <a href="/du-an/xoa?id=<?= $da['da_ma'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có muốn xóa dự án này không? Các phiếu yêu cầu liên quan sẽ bị xóa theo!');"><i class="fas fa-trash"></i></a>
+                                        <td class="text-end">
+                                            <a href="/du-an/sua?id=<?= $da['da_ma'] ?>" class="btn btn-sm btn-outline-info" title="Sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+
+                                            <a href="/du-an/xoa?id=<?= $da['da_ma'] ?>" class="btn btn-sm btn-outline-danger" title="Xóa" onclick="return confirm('Bạn có muốn xóa dự án này không? Các phiếu yêu cầu liên quan sẽ bị xóa theo!');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

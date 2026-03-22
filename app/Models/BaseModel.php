@@ -8,4 +8,7 @@ class BaseModel {
     public function __construct() {
         $this->db = Database::getConnection();
     }
+    public function getDb() {
+    return $this->db;
+}
 }

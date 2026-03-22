@@ -98,4 +98,10 @@ class DuAn extends BaseModel
         $stmt = $this->db->prepare("DELETE FROM du_an_don_vi WHERE da_ma = :id");
         return $stmt->execute(['id' => $da_ma]);
     }
+
+    public function getAll() {
+    $stmt = $this->db->prepare("SELECT * FROM du_an ORDER BY da_ma DESC");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
 }

@@ -1,6 +1,5 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
-<?php $currentPage = 'don-vi';
-include __DIR__ . '/../layouts/sidebar.php'; ?>
+<?php $currentPage = 'don-vi'; include __DIR__ . '/../layouts/sidebar.php'; ?>
 
 <div class="content-right flex-grow-1 bg-light d-flex flex-column overflow-hidden">
     <div class="p-4 flex-grow-1 overflow-auto">
@@ -45,13 +44,18 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                                             <?= $dv['cac_du_an'] ? $dv['cac_du_an'] : '<span class="text-muted fst-italic">Chưa tham gia dự án nào</span>' ?>
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-info btn-sua-donvi"
+                                            <button type="button" class="btn btn-sm btn-outline-info btn-sua-donvi"
                                                 data-id="<?= $dv['dv_ma'] ?>"
                                                 data-ten="<?= htmlspecialchars($dv['dv_ten']) ?>"
                                                 data-bs-toggle="modal" data-bs-target="#modalSuaDonVi">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <a href="/don-vi/xoa?id=<?= $dv['dv_ma'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn vị này? Mọi dữ liệu liên quan sẽ bị ảnh hưởng.');"><i class="fas fa-trash"></i></a>
+
+                                            <a href="/don-vi/xoa?id=<?= $dv['dv_ma'] ?>"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa đơn vị này? Mọi dữ liệu liên quan sẽ bị ảnh hưởng.');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -91,39 +95,40 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
             </form>
         </div>
     </div>
-    <div class="modal fade" id="modalSuaDonVi" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-info text-dark">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Cập nhật Đơn Vị</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form action="/don-vi/cap-nhat" method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" name="dv_ma" id="edit_dv_ma">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tên đơn vị <span class="text-danger">*</span></label>
-                            <input type="text" name="dv_ten" id="edit_dv_ten" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-info text-dark"><i class="fas fa-save me-1"></i> Cập nhật</button>
-                    </div>
-                </form>
+</div>
+<div class="modal fade" id="modalSuaDonVi" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-info text-dark">
+                <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Cập nhật Đơn Vị</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+            <form action="/don-vi/cap-nhat" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="dv_ma" id="edit_dv_ma">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên đơn vị <span class="text-danger">*</span></label>
+                        <input type="text" name="dv_ten" id="edit_dv_ten" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-info text-dark"><i class="fas fa-save me-1"></i> Cập nhật</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const editButtons = document.querySelectorAll('.btn-sua-donvi');
-            editButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    document.getElementById('edit_dv_ma').value = this.getAttribute('data-id');
-                    document.getElementById('edit_dv_ten').value = this.getAttribute('data-ten');
-                });
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButtons = document.querySelectorAll('.btn-sua-donvi');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Lấy data từ nút bấm đổ vào form sửa
+                document.getElementById('edit_dv_ma').value = this.getAttribute('data-id');
+                document.getElementById('edit_dv_ten').value = this.getAttribute('data-ten');
             });
         });
-    </script>
-</div>
+    });
+</script>

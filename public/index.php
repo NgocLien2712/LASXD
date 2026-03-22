@@ -68,6 +68,25 @@ $router->post('/phieu-yeu-cau/luu-phep-thu', '\App\Controllers\PhieuYeuCauContro
 $router->get('/phep-thu/sua', '\App\Controllers\PhepThuController@edit');
 $router->post('/phep-thu/cap-nhat', '\App\Controllers\PhepThuController@update');
 $router->get('/phep-thu/xoa', '\App\Controllers\PhepThuController@delete');
+$router->get('/ajax/phep-thu', '\App\Controllers\PhieuYeuCauController@getPhepThuAjax');
+$router->get('/ajax/chung-loai', '\App\Controllers\PhieuYeuCauController@getChungLoaiAjax');
+$router->get('/phieu-yeu-cau/xoa-mau', '\App\Controllers\PhieuYeuCauController@xoaMau');
+$router->post('/phieu-yeu-cau/cap-nhat-mau', '\App\Controllers\PhieuYeuCauController@capNhatMau');
+$router->get('/phieu-yeu-cau/in', '\App\Controllers\PhieuYeuCauController@inPhieu');
 
+// Quản lý cấu hình vật liệu và phép thử
+$router->get('/cau-hinh', '\App\Controllers\CauHinhController@index');
+$router->post('/cau-hinh/save', '\App\Controllers\CauHinhController@save');
+$router->get('/cau-hinh/delete-test', '\App\Controllers\CauHinhController@deleteTest');
+
+// Quản lý danh mục
+$router->get('/danh-muc', 'App\Controllers\DanhMucController@index');
+$router->post('/danh-muc/nhom/save', 'App\Controllers\DanhMucController@saveNhom');
+$router->post('/danh-muc/vat-lieu/save', 'App\Controllers\DanhMucController@saveVatLieu');
+
+$router->get('/danh-muc/nhom/delete', 'App\Controllers\DanhMucController@deleteNhom');
+$router->get('/danh-muc/vat-lieu/delete', 'App\Controllers\DanhMucController@deleteVatLieu');
+$router->post('/danh-muc/nhom/update', 'App\Controllers\DanhMucController@updateNhom');
+$router->post('/danh-muc/vat-lieu/update', 'App\Controllers\DanhMucController@updateVatLieu');
 // 5. Chạy Router
 $router->run();
