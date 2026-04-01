@@ -10,8 +10,13 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
             </h3>
             <div class="d-flex gap-2">
                 <a href="/phieu-yeu-cau/in?id=<?= $phieu['pyc_ma'] ?>" target="_blank" class="btn btn-outline-success shadow-sm">
-                    <i class="fas fa-print me-1"></i> In Phiếu
+                    <i class="fas fa-print me-1"></i> In Phiếu Giao Nhận
                 </a>
+
+                <a href="/phieu-yeu-cau/in-phieu-tho?id=<?= $phieu['pyc_ma'] ?>" target="_blank" class="btn btn-primary shadow-sm">
+                    <i class="fas fa-edit me-1"></i> In Phiếu Số Liệu Thô
+                </a>
+
                 <a href="/phieu-yeu-cau" class="btn btn-outline-secondary shadow-sm"><i class="fas fa-arrow-left me-1"></i> Quay lại</a>
             </div>
         </div>

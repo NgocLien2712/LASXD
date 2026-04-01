@@ -99,9 +99,22 @@ class DuAn extends BaseModel
         return $stmt->execute(['id' => $da_ma]);
     }
 
-    public function getAll() {
-    $stmt = $this->db->prepare("SELECT * FROM du_an ORDER BY da_ma DESC");
-    $stmt->execute();
-    return $stmt->fetchAll();
-}
+    public function getAll()
+    {
+        $stmt = $this->db->prepare("SELECT * FROM du_an ORDER BY da_ma DESC");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    // Hàm lấy danh sách tất cả các đơn vị tham gia dự án (kèm tên đơn vị và vai trò)
+    public function getChiTietDonVi($da_ma)
+    {
+        $sql = "SELECT dv.dv_ten, dadv.vai_tro 
+                FROM du_an_don_vi dadv 
+                JOIN don_vi dv ON dadv.dv_ma = dv.dv_ma 
+                WHERE dadv.da_ma = :da_ma";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['da_ma' => $da_ma]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

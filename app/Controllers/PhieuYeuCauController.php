@@ -225,36 +225,74 @@ class PhieuYeuCauController extends BaseController
         exit;
     }
 
-    // Hàm hiển thị bản in Phiếu Yêu Cầu
-    public function inPhieu() {
+    // Hàm in Phiếu Yêu Cầu
+    public function inPhieu()
+    {
         $this->checkAuth();
         $id = $_GET['id'] ?? null;
-        
         if (!$id) {
             header('Location: /phieu-yeu-cau');
             exit;
         }
 
         $pycModel = new PhieuYeuCau();
-        $mauModel = new MauThiNghiem();
-        $chiDinhModel = new \App\Models\ChiDinhPhepThu(); // Gọi model chi tiết
-
         $phieu = $pycModel->getById($id);
-        if (!$phieu) {
-            header('Location: /phieu-yeu-cau');
-            exit;
+
+        // --- LẤY THÊM THÔNG TIN CHI TIẾT DỰ ÁN ---
+        if ($phieu && !empty($phieu['da_ma'])) {
+            $duAnModel = new DuAn();
+            $chiTietDuAn = $duAnModel->getById($phieu['da_ma']);
+            if ($chiTietDuAn) {
+                // Gộp tất cả thông tin dự án vào biến $phieu
+                $phieu = array_merge($chiTietDuAn, $phieu);
+            }
         }
 
+        $mauModel = new MauThiNghiem();
+        $chiDinhModel = new ChiDinhPhepThu();
         $danhSachMau = $mauModel->getByPhieuId($id);
-        
-        // Lấy danh sách phép thử cho từng mẫu (y hệt như hàm xem chi tiết)
         foreach ($danhSachMau as &$mau) {
             $mau['danh_sach_phep_thu'] = $chiDinhModel->getByMauId($mau['mtn_ma']);
         }
 
-        // Render ra file giao diện in (không dùng chung layout có sidebar)
         return $this->render('phieu-yeu-cau/print', [
-            'title' => 'In Phiếu Yêu Cầu - ' . $phieu['pyc_so_phieu'],
+            'title' => 'In Phiếu Yêu Cầu - ' . ($phieu['pyc_so_phieu'] ?? ''),
+            'phieu' => $phieu,
+            'danhSachMau' => $danhSachMau
+        ]);
+    }
+
+    // Hàm in Phiếu Số Liệu Thô
+    public function inPhieuTho()
+    {
+        $this->checkAuth();
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            header('Location: /phieu-yeu-cau');
+            exit;
+        }
+
+        $pycModel = new PhieuYeuCau();
+        $phieu = $pycModel->getById($id);
+
+        // --- LẤY THÊM THÔNG TIN CHI TIẾT DỰ ÁN ---
+        if ($phieu && !empty($phieu['da_ma'])) {
+            $duAnModel = new DuAn();
+            $chiTietDuAn = $duAnModel->getById($phieu['da_ma']);
+            if ($chiTietDuAn) {
+                $phieu = array_merge($chiTietDuAn, $phieu);
+            }
+        }
+
+        $mauModel = new MauThiNghiem();
+        $chiDinhModel = new ChiDinhPhepThu();
+        $danhSachMau = $mauModel->getByPhieuId($id);
+        foreach ($danhSachMau as &$mau) {
+            $mau['danh_sach_phep_thu'] = $chiDinhModel->getByMauId($mau['mtn_ma']);
+        }
+
+        return $this->render('phieu-yeu-cau/print-so-lieu', [
+            'title' => 'Phiếu Số Liệu Thô - ' . ($phieu['pyc_so_phieu'] ?? ''),
             'phieu' => $phieu,
             'danhSachMau' => $danhSachMau
         ]);

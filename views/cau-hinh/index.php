@@ -105,6 +105,7 @@
                                             <th>Tên hiển thị (VD: Cạnh a)</th>
                                             <th>Biến (VD: a)</th>
                                             <th>Kiểu dữ liệu</th>
+                                            <th>Giá trị mặc định</th>
                                             <th style="width: 50px;">Xóa</th>
                                         </tr>
                                     </thead>
@@ -121,6 +122,7 @@
                                                         <option value="date" <?= $f['cht_kieu_du_lieu']=='date'?'selected':'' ?>>Ngày</option>
                                                     </select>
                                                 </td>
+                                                <td><input type="text" name="cht_mac_dinh[]" class="form-control" value="<?= htmlspecialchars($f['cht_mac_dinh'] ?? '') ?>" placeholder="(tùy chọn)"></td>
                                                 <td class="text-center"><button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-times"></i></button></td>
                                             </tr>
                                             <?php endforeach; ?>
@@ -171,6 +173,7 @@ function addField() {
                 <option value="date">Ngày</option>
             </select>
         </td>
+        <td><input type="text" name="cht_mac_dinh[]" class="form-control" placeholder="Tùy chọn"></td>
         <td class="text-center"><button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-times"></i></button></td>
     </tr>`;
     document.querySelector('#table-fields tbody').insertAdjacentHTML('beforeend', row);

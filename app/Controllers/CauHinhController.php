@@ -106,12 +106,13 @@ class CauHinhController extends BaseController
         if (!empty($_POST['cht_ten_hien_thi'])) {
             foreach ($_POST['cht_ten_hien_thi'] as $key => $ten) {
                 if (empty($ten)) continue;
-                $stmt = $db->prepare("INSERT INTO cau_hinh_truong (pt_ma, cht_ten_hien_thi, cht_ten_bien, cht_kieu_du_lieu) VALUES (?, ?, ?, ?)");
+                $stmt = $db->prepare("INSERT INTO cau_hinh_truong (pt_ma, cht_ten_hien_thi, cht_ten_bien, cht_kieu_du_lieu, cht_mac_dinh) VALUES (?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $pt_ma,
                     $ten,
                     $_POST['cht_ten_bien'][$key],
-                    $_POST['cht_kieu_du_lieu'][$key]
+                    $_POST['cht_kieu_du_lieu'][$key],
+                    $_POST['cht_mac_dinh'][$key] ?? null
                 ]);
             }
         }

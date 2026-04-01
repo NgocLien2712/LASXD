@@ -73,6 +73,7 @@ $router->get('/ajax/chung-loai', '\App\Controllers\PhieuYeuCauController@getChun
 $router->get('/phieu-yeu-cau/xoa-mau', '\App\Controllers\PhieuYeuCauController@xoaMau');
 $router->post('/phieu-yeu-cau/cap-nhat-mau', '\App\Controllers\PhieuYeuCauController@capNhatMau');
 $router->get('/phieu-yeu-cau/in', '\App\Controllers\PhieuYeuCauController@inPhieu');
+$router->get('/phieu-yeu-cau/in-phieu-tho', 'App\Controllers\PhieuYeuCauController@inPhieuTho');
 
 // Quản lý cấu hình vật liệu và phép thử
 $router->get('/cau-hinh', '\App\Controllers\CauHinhController@index');
@@ -88,5 +89,6 @@ $router->get('/danh-muc/nhom/delete', 'App\Controllers\DanhMucController@deleteN
 $router->get('/danh-muc/vat-lieu/delete', 'App\Controllers\DanhMucController@deleteVatLieu');
 $router->post('/danh-muc/nhom/update', 'App\Controllers\DanhMucController@updateNhom');
 $router->post('/danh-muc/vat-lieu/update', 'App\Controllers\DanhMucController@updateVatLieu');
+
 // 5. Chạy Router
 $router->run();
