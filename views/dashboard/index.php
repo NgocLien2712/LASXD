@@ -1,49 +1,53 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
-<?php 
-    $currentPage = 'dashboard'; 
-    include __DIR__ . '/../layouts/sidebar.php'; 
+<?php
+$currentPage = 'dashboard';
+include __DIR__ . '/../layouts/sidebar.php';
 
-    // =========================================================
-    // CODE LẤY SỐ LIỆU THỰC TẾ TỪ DATABASE
-    // =========================================================
-    $db = (new \App\Models\BaseModel())->getDb();
-    
-    // 1. Đếm số lượng
-    $countDuAn = 0;
-    try { $countDuAn = $db->query("SELECT COUNT(*) FROM du_an")->fetchColumn(); } catch (\Exception $e) {}
-    
-    $countNhanVien = 0;
-    try { $countNhanVien = $db->query("SELECT COUNT(*) FROM nhan_vien")->fetchColumn(); } catch (\Exception $e) {}
-    
-    $countPhieu = 0;
-    try { $countPhieu = $db->query("SELECT COUNT(*) FROM phieu_yeu_cau")->fetchColumn(); } catch (\Exception $e) {}
-    
-    $countMau = 0;
-    try { $countMau = $db->query("SELECT COUNT(*) FROM mau_thi_nghiem")->fetchColumn(); } catch (\Exception $e) {}
+// =========================================================
+// CODE LẤY SỐ LIỆU THỰC TẾ TỪ DATABASE
+// =========================================================
+$db = (new \App\Models\BaseModel())->getDb();
 
-    // 2. Lấy danh sách 5 hoạt động gần đây nhất
-    $recentActivities = [];
-    try { 
-        // Lưu ý: Tên cột (ma_phieu, ten_phep_thu...) có thể cần điều chỉnh lại cho khớp đúng với Database thực tế của bạn
-        $sql = "SELECT p.*, d.Ten_Du_An, n.Ho_Ten 
-                FROM phieu_yeu_cau p 
-                LEFT JOIN du_an d ON p.id_du_an = d.ID 
-                LEFT JOIN nhan_vien n ON p.id_nhan_vien = n.ID 
-                ORDER BY p.id DESC LIMIT 5";
-        $recentActivities = $db->query($sql)->fetchAll(\PDO::FETCH_ASSOC); 
-    } catch (\Exception $e) {
-        // Nếu bảng chưa tồn tại hoặc sai tên cột, mảng sẽ rỗng và không gây lỗi
-    }
+// 1. Đếm số lượng tổng quan
+$countDuAn = 0;
+try {
+    $countDuAn = $db->query("SELECT COUNT(*) FROM du_an")->fetchColumn();
+} catch (\Exception $e) {}
+
+$countNhanVien = 0;
+try {
+    $countNhanVien = $db->query("SELECT COUNT(*) FROM nhan_vien")->fetchColumn();
+} catch (\Exception $e) {}
+
+$countPhieu = 0;
+try {
+    $countPhieu = $db->query("SELECT COUNT(*) FROM phieu_yeu_cau")->fetchColumn();
+} catch (\Exception $e) {}
+
+$countMau = 0;
+try {
+    $countMau = $db->query("SELECT COUNT(*) FROM mau_thi_nghiem")->fetchColumn();
+} catch (\Exception $e) {}
+
+// 2. Lấy danh sách Dự án mới nhất (Dự án thêm sau hiện lên trước)
+$recentProjects = [];
+try {
+    // Sắp xếp giảm dần theo da_ma để lấy dự án mới nhất, giới hạn 5 dự án
+    $sqlProjects = "SELECT * FROM du_an ORDER BY da_ma DESC LIMIT 5";
+    $recentProjects = $db->query($sqlProjects)->fetchAll(\PDO::FETCH_ASSOC);
+} catch (\Exception $e) {
+    echo "<script>console.error('Lỗi lấy danh sách dự án: " . addslashes($e->getMessage()) . "');</script>";
+}
+
 ?>
 
 <div class="content-right flex-grow-1 bg-light d-flex flex-column overflow-hidden">
-    
+
     <div class="p-4 flex-grow-1 overflow-auto">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0 text-secondary"><i class="fas fa-home me-2"></i>Tổng quan hoạt động</h3>
-            <a href="/phieu-yeu-cau/create" class="btn btn-primary shadow-sm"><i class="fas fa-plus me-1"></i> Tạo phiếu mới</a>
         </div>
-        
+
         <div class="row g-3 mb-4">
             <div class="col-md-3">
                 <div class="card border-0 shadow-sm bg-primary text-white p-3 rounded-3 h-100">
@@ -56,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3">
                 <div class="card border-0 shadow-sm bg-success text-white p-3 rounded-3 h-100">
                     <div class="d-flex justify-content-between">
@@ -68,7 +72,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3">
                 <div class="card border-0 shadow-sm bg-warning text-white p-3 rounded-3 h-100">
                     <div class="d-flex justify-content-between">
@@ -80,7 +84,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3">
                 <div class="card border-0 shadow-sm bg-info text-white p-3 rounded-3 h-100">
                     <div class="d-flex justify-content-between">
@@ -95,46 +99,47 @@
         </div>
         
         <div class="bg-white p-4 shadow-sm rounded-3 border-top border-primary border-3">
-            <h5 class="mb-3 text-secondary">Hoạt động thí nghiệm gần đây</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0 text-secondary"><i class="fas fa-building me-2"></i>Dự án / Công trình mới tiếp nhận</h5>
+                <a href="/du-an" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+            </div>
+            
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Mã Phiếu</th>
-                            <th>Dự án</th>
-                            <th>Phép thử</th>
-                            <th>Người thực hiện</th>
-                            <th>Trạng thái</th>
+                            <th width="15%">Mã Dự Án</th>
+                            <th width="40%">Tên Dự Án / Công Trình</th>
+                            <th width="45%">Địa Chỉ</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($recentActivities)): ?>
-                            <?php foreach ($recentActivities as $activity): ?>
+                        <?php if (!empty($recentProjects)): ?>
+                            <?php foreach ($recentProjects as $project): ?>
                                 <tr>
-                                    <td><strong><?= htmlspecialchars($activity['ma_phieu'] ?? 'N/A') ?></strong></td>
-                                    <td><?= htmlspecialchars($activity['Ten_Du_An'] ?? 'Chưa xác định') ?></td>
-                                    <td><?= htmlspecialchars($activity['ten_phep_thu'] ?? 'Chưa xác định') ?></td>
                                     <td>
-                                        <?php $tenNV = htmlspecialchars($activity['Ho_Ten'] ?? 'Ẩn danh'); ?>
-                                        <img src="https://ui-avatars.com/api/?name=<?= urlencode($tenNV) ?>&background=random" class="rounded-circle me-2" width="25">
-                                        <?= $tenNV ?>
+                                        <span class="badge bg-secondary px-2 py-1">
+                                            <?= htmlspecialchars($project['da_ma'] ?? 'N/A') ?>
+                                        </span>
                                     </td>
                                     <td>
-                                        <?php 
-                                            $trangThai = $activity['trang_thai'] ?? 'Chờ xử lý';
-                                            $badgeClass = 'bg-secondary';
-                                            if ($trangThai === 'Hoàn thành') $badgeClass = 'bg-success';
-                                            elseif ($trangThai === 'Đang xử lý') $badgeClass = 'bg-warning text-dark';
-                                        ?>
-                                        <span class="badge <?= $badgeClass ?> rounded-pill px-3"><?= htmlspecialchars($trangThai) ?></span>
+                                        <strong class="text-primary">
+                                            <?= htmlspecialchars($project['da_ten'] ?? 'Chưa cập nhật tên') ?>
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">
+                                            <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                            <?= htmlspecialchars($project['da_diachi'] ?? 'Chưa cập nhật địa chỉ') ?>
+                                        </span>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
-                                    <i class="fas fa-inbox fa-2x mb-2 opacity-50"></i>
-                                    <p class="mb-0">Chưa có hoạt động thí nghiệm nào gần đây.</p>
+                                <td colspan="3" class="text-center text-muted py-4">
+                                    <i class="fas fa-folder-open fa-3x mb-3 opacity-25"></i>
+                                    <p class="mb-0">Chưa có dự án nào trong cơ sở dữ liệu.</p>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -142,7 +147,8 @@
                 </table>
             </div>
         </div>
-    </div> 
-    
+
+    </div>
+
     <?php include __DIR__ . '/../layouts/footer.php'; ?>
 </div>

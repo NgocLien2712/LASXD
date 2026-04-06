@@ -9,11 +9,11 @@
         <li class="<?= ($currentPage == 'don-vi') ? 'active' : '' ?>">
             <a href="/don-vi"><i class="fas fa-file-signature"></i> Quản lý Đơn vị</a>
         </li>
-        <li class="<?= ($currentPage == 'bieu-mau') ? 'active' : '' ?>">
-            <a href="/bieu-mau"><i class="fas fa-file-signature"></i> Tiêu chuẩn Thí nghiệm</a>
-        </li>
         <li class="<?= ($currentPage == 'phieu-yeu-cau') ? 'active' : '' ?>">
             <a href="/phieu-yeu-cau"><i class="fas fa-flask"></i> Phiếu yêu cầu</a>
+        </li>
+                <li class="<?= ($currentPage == 'ket-qua') ? 'active' : '' ?>">
+            <a href="/ket-qua"><i class="fas fa-poll"></i> Quản lý Kết quả</a>
         </li>
         <li class="<?= ($currentPage == 'nhan-vien') ? 'active' : '' ?>">
             <a href="/nhan-vien"><i class="fas fa-users-cog"></i> Nhân sự & Phân quyền</a>

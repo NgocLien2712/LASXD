@@ -91,9 +91,6 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                         </select>
                     </div>
 
-                    <div class="alert alert-info py-2 mb-0" role="alert" style="font-size: 0.85rem;">
-                        <i class="fas fa-info-circle me-1"></i> Số phiếu và người lập sẽ được hệ thống tạo tự động.
-                    </div>
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>

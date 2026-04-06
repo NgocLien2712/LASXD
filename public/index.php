@@ -10,13 +10,17 @@ use Bramus\Router\Router;
 $router = new Router();
 
 // 4. Định nghĩa các đường dẫn (Routes)
+
+// Đường dẫn gốc
 $router->get('/', function () {
     if (isset($_SESSION['user_id'])) {
+        // Đã đăng nhập -> Vào thẳng Dashboard
         header('Location: /dashboard');
-        exit;
+    } else {
+        // Chưa đăng nhập -> Chuyển hướng thẳng tới trang Login
+        header('Location: /login');
     }
-    echo "<h1>Hệ thống Quản lý LAS-XD đã sẵn sàng!</h1>";
-    echo "<a href='/login'>Đi tới trang Đăng nhập</a>";
+    exit;
 });
 
 // Route đăng nhập / đăng xuất
@@ -27,27 +31,21 @@ $router->get('/logout', '\App\Controllers\AuthController@logout');
 // Dashboard
 $router->get('/dashboard', '\App\Controllers\DashboardController@index');
 
-// ==========================================
 // QUẢN LÝ DỰ ÁN
-// ==========================================
 $router->get('/du-an', '\App\Controllers\DuAnController@index');
 $router->post('/du-an/luu', '\App\Controllers\DuAnController@store');
 $router->get('/du-an/sua', '\App\Controllers\DuAnController@edit');
 $router->post('/du-an/cap-nhat', '\App\Controllers\DuAnController@update');
 $router->get('/du-an/xoa', '\App\Controllers\DuAnController@delete');
 
-// ==========================================
 // QUẢN LÝ ĐƠN VỊ
-// ==========================================
 $router->get('/don-vi', '\App\Controllers\DonViController@index');
 $router->post('/don-vi/luu', '\App\Controllers\DonViController@store');
 $router->get('/don-vi/sua', '\App\Controllers\DonViController@edit');
 $router->post('/don-vi/cap-nhat', '\App\Controllers\DonViController@update');
 $router->get('/don-vi/xoa', '\App\Controllers\DonViController@delete');
 
-// ==========================================
 // QUẢN LÝ NHÂN VIÊN
-// ==========================================
 $router->get('/nhan-vien', '\App\Controllers\NhanVienController@index');
 $router->get('/nhan-vien/tao-moi', '\App\Controllers\NhanVienController@create');
 $router->post('/nhan-vien/luu', '\App\Controllers\NhanVienController@store');
@@ -55,9 +53,7 @@ $router->get('/nhan-vien/sua', '\App\Controllers\NhanVienController@edit');
 $router->post('/nhan-vien/cap-nhat', '\App\Controllers\NhanVienController@update');
 $router->get('/nhan-vien/xoa', '\App\Controllers\NhanVienController@delete');
 
-// ==========================================
 // QUẢN LÝ PHIẾU YÊU CẦU & THÍ NGHIỆM
-// ==========================================
 $router->get('/phieu-yeu-cau', '\App\Controllers\PhieuYeuCauController@index');
 $router->get('/phieu-yeu-cau/tao-moi', '\App\Controllers\PhieuYeuCauController@create');
 $router->post('/phieu-yeu-cau/luu', '\App\Controllers\PhieuYeuCauController@store');
@@ -84,11 +80,16 @@ $router->get('/cau-hinh/delete-test', '\App\Controllers\CauHinhController@delete
 $router->get('/danh-muc', 'App\Controllers\DanhMucController@index');
 $router->post('/danh-muc/nhom/save', 'App\Controllers\DanhMucController@saveNhom');
 $router->post('/danh-muc/vat-lieu/save', 'App\Controllers\DanhMucController@saveVatLieu');
-
 $router->get('/danh-muc/nhom/delete', 'App\Controllers\DanhMucController@deleteNhom');
 $router->get('/danh-muc/vat-lieu/delete', 'App\Controllers\DanhMucController@deleteVatLieu');
 $router->post('/danh-muc/nhom/update', 'App\Controllers\DanhMucController@updateNhom');
 $router->post('/danh-muc/vat-lieu/update', 'App\Controllers\DanhMucController@updateVatLieu');
+
+// QUẢN LÝ KẾT QUẢ THÍ NGHIỆM
+$router->get('/ket-qua', '\App\Controllers\KetQuaController@index');
+$router->get('/ket-qua/nhap', '\App\Controllers\KetQuaController@nhapKetQua');
+$router->post('/ket-qua/luu', '\App\Controllers\KetQuaController@luuKetQua');
+$router->get('/ket-qua/in', '\App\Controllers\KetQuaController@inKetQua');
 
 // 5. Chạy Router
 $router->run();

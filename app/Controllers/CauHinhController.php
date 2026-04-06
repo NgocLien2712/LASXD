@@ -103,16 +103,22 @@ class CauHinhController extends BaseController
         }
 
         // Lưu các cấu hình trường (a, b, P...)
+        // Lưu các cấu hình trường (a, b, P...)
         if (!empty($_POST['cht_ten_hien_thi'])) {
             foreach ($_POST['cht_ten_hien_thi'] as $key => $ten) {
-                if (empty($ten)) continue;
+                if (empty(trim($ten))) continue; // Bỏ qua nếu tên rỗng
+
+                // Xử lý giá trị mặc định: Nếu rỗng thì gán bằng null để PostgreSQL không báo lỗi kiểu số
+                $mac_dinh = trim($_POST['cht_mac_dinh'][$key] ?? '');
+                $mac_dinh = ($mac_dinh === '') ? null : $mac_dinh;
+
                 $stmt = $db->prepare("INSERT INTO cau_hinh_truong (pt_ma, cht_ten_hien_thi, cht_ten_bien, cht_kieu_du_lieu, cht_mac_dinh) VALUES (?, ?, ?, ?, ?)");
                 $stmt->execute([
                     $pt_ma,
-                    $ten,
-                    $_POST['cht_ten_bien'][$key],
+                    trim($ten),
+                    trim($_POST['cht_ten_bien'][$key]),
                     $_POST['cht_kieu_du_lieu'][$key],
-                    $_POST['cht_mac_dinh'][$key] ?? null
+                    $mac_dinh // Truyền biến đã xử lý vào đây
                 ]);
             }
         }

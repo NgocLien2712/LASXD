@@ -76,8 +76,8 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                                 <table class="table table-hover align-middle mb-0">
                                     <thead class="table-light">
                                         <tr>
-                                            <th class="ps-3" style="width: 25%;">Tên Mẫu / Kích thước</th>
-                                            <th style="width: 35%;">Phép thử & Tiêu chuẩn</th>
+                                            <th class="ps-3" style="width: 25%;">Tên Mẫu / Chủng loại</th>
+                                            <th style="width: 35%;">Phép thử </th>
                                             <th class="text-center" style="width: 10%;">Số Lượng</th>
                                             <th class="text-center" style="width: 10%;">Ngày Lấy</th>
                                             <th class="text-center" style="width: 20%;">Thao Tác</th>
@@ -88,7 +88,7 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                                             <tr>
                                                 <td class="ps-3">
                                                     <div class="fw-bold text-dark"><?= htmlspecialchars($mau['mtn_ten']) ?></div>
-                                                    <div class="text-muted small">KT: <?= htmlspecialchars($mau['mtn_quy_cach'] ?? '-') ?></div>
+                                                    <div class="text-muted small"> Loại: <?= htmlspecialchars($mau['mtn_quy_cach'] ?? '-') ?></div>
                                                 </td>
                                                 <td>
                                                     <?php if (!empty($mau['danh_sach_phep_thu'])): ?>
@@ -96,7 +96,7 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                                                             <?php foreach ($mau['danh_sach_phep_thu'] as $pt): ?>
                                                                 <li class="mb-1 d-flex align-items-start">
                                                                     <i class="fas fa-check-square text-success me-2 mt-1"></i>
-                                                                    <span><strong><?= htmlspecialchars($pt['ten_phep_thu']) ?></strong> <br> <small class="text-muted"><?= htmlspecialchars($pt['tieu_chuan']) ?></small></span>
+                                                                    <span><strong><?= htmlspecialchars($pt['ten_phep_thu']) ?></strong> <br> <small class="text-muted"><?= htmlspecialchars($pt['tieu_chuan'] ?? '') ?></small></span>
                                                                 </li>
                                                             <?php endforeach; ?>
                                                         </ul>
@@ -112,14 +112,21 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                                                             data-bs-toggle="modal" data-bs-target="#modalThemPhepThu"
                                                             data-mtn-ma="<?= $mau['mtn_ma'] ?>"
                                                             data-mtn-ten="<?= htmlspecialchars($mau['mtn_ten']) ?>"
-                                                            data-lvl-ma="<?= $mau['lvl_ma'] ?>"
+                                                            data-lvl-ma="<?= isset($mau['lvl_ma']) ? $mau['lvl_ma'] : '' ?>"
+                                                            data-cl="<?= isset($mau['cl_ma']) ? $mau['cl_ma'] : '' ?>"
                                                             title="Chỉ định phép thử">
                                                             <i class="fas fa-flask"></i>
                                                         </button>
+
                                                         <button class="btn btn-sm btn-outline-info shadow-sm btn-sua-mau"
                                                             data-bs-toggle="modal" data-bs-target="#modalSuaMau"
-                                                            data-id="<?= $mau['mtn_ma'] ?>" data-lvl="<?= $mau['lvl_ma'] ?>" data-cl="<?= $mau['cl_ma'] ?>"
-                                                            data-sl="<?= $mau['mtn_so_luong'] ?>" data-ngay="<?= $mau['mtn_ngay_lay'] ?>" data-ghichu="<?= htmlspecialchars($mau['mtn_ghi_chu'] ?? '', ENT_QUOTES) ?>" title="Sửa mẫu">
+                                                            data-id="<?= $mau['mtn_ma'] ?>"
+                                                            data-lvl="<?= isset($mau['lvl_ma']) ? $mau['lvl_ma'] : '' ?>"
+                                                            data-cl="<?= isset($mau['cl_ma']) ? $mau['cl_ma'] : '' ?>"
+                                                            data-sl="<?= $mau['mtn_so_luong'] ?>"
+                                                            data-ngay="<?= $mau['mtn_ngay_lay'] ?>"
+                                                            data-ghichu="<?= htmlspecialchars(isset($mau['mtn_ghi_chu']) ? $mau['mtn_ghi_chu'] : '', ENT_QUOTES) ?>"
+                                                            title="Sửa mẫu">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
                                                         <a href="/phieu-yeu-cau/xoa-mau?id=<?= $mau['mtn_ma'] ?>&pyc_ma=<?= $phieu['pyc_ma'] ?>"
@@ -276,9 +283,17 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                 document.getElementById('edit_mtn_so_luong').value = this.getAttribute('data-sl');
                 document.getElementById('edit_mtn_ngay_lay').value = this.getAttribute('data-ngay');
                 document.getElementById('edit_mtn_ghi_chu').value = this.getAttribute('data-ghichu');
+
                 let lvl_ma_cu = this.getAttribute('data-lvl');
                 let cl_ma_cu = this.getAttribute('data-cl');
-                selectLvlEdit.value = lvl_ma_cu;
+
+                // ĐÃ SỬA: Chống lỗi trắng Select Box khi thiếu dữ liệu
+                if (lvl_ma_cu && lvl_ma_cu.trim() !== "") {
+                    selectLvlEdit.value = lvl_ma_cu;
+                } else {
+                    selectLvlEdit.value = "";
+                }
+
                 loadChungLoaiAJAX(lvl_ma_cu, selectClEdit, cl_ma_cu);
             });
         });
@@ -324,6 +339,12 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                 checklistContainer.innerHTML = '<div class="text-center text-muted py-3"><div class="spinner-border spinner-border-sm text-success"></div> Đang tải dữ liệu...</div>';
 
                 // Gọi AJAX để lấy danh sách phép thử
+                // Tránh lỗi fetch undefined nếu thiếu lvl_ma
+                if (!lvl_ma || lvl_ma.trim() === '') {
+                    checklistContainer.innerHTML = '<div class="text-danger fst-italic py-3">Mẫu chưa được cấu hình loại vật liệu.</div>';
+                    return;
+                }
+
                 fetch(`/ajax/phep-thu?lvl_ma=${lvl_ma}&mtn_ma=${mtn_ma}`)
                     .then(response => response.json())
                     .then(data => {
@@ -341,7 +362,6 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                                     <input class="form-check-input" type="checkbox" name="pt_ma[]" value="${item.pt_ma}" id="pt_${item.pt_ma}" ${isChecked}>
                                     <label class="form-check-label w-100" style="cursor: pointer;" for="pt_${item.pt_ma}">
                                         <div class="fw-bold text-dark">${item.pt_ten}</div>
-                                        <div class="small text-muted">Tiêu chuẩn: ${item.pt_tieu_chuan}</div>
                                     </label>
                                 </div>
                             `;
