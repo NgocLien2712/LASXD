@@ -141,4 +141,5 @@ class CauHinhController extends BaseController
         header("Location: /cau-hinh?cl_ma=" . $cl_ma);
         exit;
     }
+
 }

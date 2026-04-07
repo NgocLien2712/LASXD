@@ -58,18 +58,28 @@ $router->get('/phieu-yeu-cau', '\App\Controllers\PhieuYeuCauController@index');
 $router->get('/phieu-yeu-cau/tao-moi', '\App\Controllers\PhieuYeuCauController@create');
 $router->post('/phieu-yeu-cau/luu', '\App\Controllers\PhieuYeuCauController@store');
 $router->get('/phieu-yeu-cau/xem', '\App\Controllers\PhieuYeuCauController@show');
+
+// --- THÊM 3 DÒNG NÀY ĐỂ XỬ LÝ SỬA / XÓA PHIẾU YÊU CẦU ---
+$router->get('/phieu-yeu-cau/sua', '\App\Controllers\PhieuYeuCauController@sua');
+$router->post('/phieu-yeu-cau/luu-sua', '\App\Controllers\PhieuYeuCauController@luuSua');
+$router->get('/phieu-yeu-cau/xoa', '\App\Controllers\PhieuYeuCauController@xoa');
+// --------------------------------------------------------
+
 $router->post('/phieu-yeu-cau/luu-mau', '\App\Controllers\PhieuYeuCauController@luuMau');
 $router->post('/phieu-yeu-cau/luu-phep-thu', '\App\Controllers\PhieuYeuCauController@luuPhepThu');
-
-$router->get('/phep-thu/sua', '\App\Controllers\PhepThuController@edit');
-$router->post('/phep-thu/cap-nhat', '\App\Controllers\PhepThuController@update');
-$router->get('/phep-thu/xoa', '\App\Controllers\PhepThuController@delete');
-$router->get('/ajax/phep-thu', '\App\Controllers\PhieuYeuCauController@getPhepThuAjax');
-$router->get('/ajax/chung-loai', '\App\Controllers\PhieuYeuCauController@getChungLoaiAjax');
 $router->get('/phieu-yeu-cau/xoa-mau', '\App\Controllers\PhieuYeuCauController@xoaMau');
 $router->post('/phieu-yeu-cau/cap-nhat-mau', '\App\Controllers\PhieuYeuCauController@capNhatMau');
 $router->get('/phieu-yeu-cau/in', '\App\Controllers\PhieuYeuCauController@inPhieu');
-$router->get('/phieu-yeu-cau/in-phieu-tho', 'App\Controllers\PhieuYeuCauController@inPhieuTho');
+$router->get('/phieu-yeu-cau/in-phieu-tho', '\App\Controllers\PhieuYeuCauController@inPhieuTho');
+
+// AJAX & CÁC ROUTE KHÁC
+$router->get('/ajax/phep-thu', '\App\Controllers\PhieuYeuCauController@getPhepThuAjax');
+$router->get('/ajax/chung-loai', '\App\Controllers\PhieuYeuCauController@getChungLoaiAjax');
+
+// QUẢN LÝ PHÉP THỬ
+$router->get('/phep-thu/sua', '\App\Controllers\PhepThuController@edit');
+$router->post('/phep-thu/cap-nhat', '\App\Controllers\PhepThuController@update');
+$router->get('/phep-thu/xoa', '\App\Controllers\PhepThuController@delete');
 
 // Quản lý cấu hình vật liệu và phép thử
 $router->get('/cau-hinh', '\App\Controllers\CauHinhController@index');

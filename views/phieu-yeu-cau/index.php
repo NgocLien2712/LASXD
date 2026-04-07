@@ -1,6 +1,28 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
-<?php $currentPage = 'phieu-yeu-cau';
-include __DIR__ . '/../layouts/sidebar.php'; ?>
+<?php
+$currentPage = 'phieu-yeu-cau';
+include __DIR__ . '/../layouts/sidebar.php';
+
+// === GOM NHÓM DỮ LIỆU THEO PHIẾU VÀ LỌC VẬT LIỆU ===
+$danhSachGomNhom = [];
+if (!empty($danhSachPYC)) {
+    foreach ($danhSachPYC as $pyc) {
+        $pyc_ma = $pyc['pyc_ma'];
+
+        // Nếu mã phiếu này chưa có trong mảng thì tạo mới dòng
+        if (!isset($danhSachGomNhom[$pyc_ma])) {
+            $danhSachGomNhom[$pyc_ma] = $pyc; // Lấy toàn bộ thông tin gốc của phiếu
+            $danhSachGomNhom[$pyc_ma]['vat_lieu'] = []; // Tạo mảng rỗng chứa tên vật liệu
+        }
+
+        // Thêm tên vật liệu vào mảng (nếu có và chưa bị trùng)
+        $tenVatLieu = $pyc['cl_ten'] ?? null;
+        if ($tenVatLieu && !in_array($tenVatLieu, $danhSachGomNhom[$pyc_ma]['vat_lieu'])) {
+            $danhSachGomNhom[$pyc_ma]['vat_lieu'][] = $tenVatLieu;
+        }
+    }
+}
+?>
 
 <div class="content-right flex-grow-1 bg-light d-flex flex-column overflow-hidden">
     <div class="p-4 flex-grow-1 overflow-auto">
@@ -16,32 +38,49 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>Số Phiếu</th>
+                        <th>Mã Phiếu</th>
                         <th>Tên Dự Án</th>
+                        <th>Vật liệu thí nghiệm</th>
                         <th>Người Lập</th>
                         <th>Ngày Nhận</th>
-                        <th>Trạng Thái</th>
                         <th class="text-center">Hành Động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (!empty($danhSachPYC)): ?>
-                        <?php foreach ($danhSachPYC as $pyc): ?>
+                    <?php if (!empty($danhSachGomNhom)): ?>
+                        <?php foreach ($danhSachGomNhom as $pyc): ?>
                             <tr>
                                 <td><span class="badge bg-secondary"><?= htmlspecialchars($pyc['pyc_so_phieu']) ?></span></td>
 
                                 <td class="fw-bold text-primary"><?= htmlspecialchars($pyc['da_ten'] ?? 'Chưa xác định') ?></td>
+
+                                <td>
+                                    <?php if (!empty($pyc['vat_lieu'])): ?>
+                                        <?php foreach ($pyc['vat_lieu'] as $vl): ?>
+                                            <span class="badge bg-success bg-opacity-75 text-white me-1 mb-1" style="font-size: 0.85rem; font-weight: normal;">
+                                                <?= htmlspecialchars($vl) ?>
+                                            </span>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <span class="text-muted">Chưa có</span>
+                                    <?php endif; ?>
+                                </td>
+
                                 <td><i class="fas fa-user-circle text-muted me-1"></i> <?= htmlspecialchars($pyc['nv_ten'] ?? 'Ẩn danh') ?></td>
 
                                 <td><?= date('d/m/Y', strtotime($pyc['pyc_ngay_nhan_mau'])) ?></td>
-                                <td>
-                                    <span class="badge bg-<?= $pyc['pyc_trang_thai'] == 'Mới tạo' ? 'info' : 'warning' ?>">
-                                        <?= htmlspecialchars($pyc['pyc_trang_thai']) ?>
-                                    </span>
-                                </td>
+
                                 <td class="text-center">
                                     <a href="/phieu-yeu-cau/xem?id=<?= $pyc['pyc_ma'] ?>" class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
                                         <i class="fas fa-eye"></i>
+                                    </a>
+
+                                    <a href="/phieu-yeu-cau/sua?id=<?= $pyc['pyc_ma'] ?>" class="btn btn-sm btn-outline-warning mx-1" title="Sửa phiếu">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <a href="/phieu-yeu-cau/xoa?id=<?= $pyc['pyc_ma'] ?>" class="btn btn-sm btn-outline-danger" title="Xóa phiếu" onclick="return confirm('Bạn có chắc chắn muốn xóa Phiếu yêu cầu này không? Mọi dữ liệu mẫu và kết quả liên quan sẽ bị xóa sạch!');">
+                                        <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>

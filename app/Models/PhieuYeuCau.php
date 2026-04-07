@@ -1,36 +1,47 @@
 <?php
+
 namespace App\Models;
+
 use App\Core\Database;
 
-class PhieuYeuCau {
+class PhieuYeuCau
+{
     protected $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         // Lưu ý: Dùng getConnection() theo cấu trúc Core của bạn
-        $this->db = Database::getConnection(); 
+        $this->db = Database::getConnection();
     }
 
-    public function getAll($keyword = '') {
-    // Dùng JOIN để lấy tên Dự án và Tên nhân viên từ các bảng khác
-    $sql = "SELECT pyc.*, da.da_ten, nv.nv_ten 
-            FROM phieu_yeu_cau pyc
-            LEFT JOIN du_an da ON pyc.da_ma = da.da_ma
-            LEFT JOIN nhan_vien nv ON pyc.nv_lap_phieu = nv.nv_ma
-            WHERE pyc.pyc_so_phieu LIKE :keyword 
-            ORDER BY pyc.pyc_ma DESC";
-    
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute(['keyword' => '%' . $keyword . '%']);
-    return $stmt->fetchAll();
-}
+    public function getAll($keyword = '')
+    {
+        // 1. Chỉ cần 1 câu lệnh này là ĐÃ LẤY ĐƯỢC TÊN VẬT LIỆU (cl_ten)
+        $sql = "SELECT pyc.*, da.da_ten, nv.nv_ten, cl.cl_ten 
+                FROM phieu_yeu_cau pyc
+                LEFT JOIN du_an da ON pyc.da_ma = da.da_ma
+                LEFT JOIN nhan_vien nv ON pyc.nv_lap_phieu = nv.nv_ma
+                LEFT JOIN mau_thi_nghiem mtn ON pyc.pyc_ma = mtn.pyc_ma
+                LEFT JOIN chung_loai cl ON mtn.cl_ma = cl.cl_ma
+                WHERE pyc.pyc_so_phieu LIKE :keyword 
+                ORDER BY pyc.pyc_ma DESC";
 
-    public function insert($data) {
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['keyword' => '%' . $keyword . '%']);
+        
+        // Trả về dữ liệu cho Controller truyền sang View (View sẽ tự gom nhóm)
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function insert($data)
+    {
         $sql = "INSERT INTO phieu_yeu_cau (pyc_so_phieu, da_ma, nv_lap_phieu, pyc_ngay_nhan_mau, pyc_trang_thai) 
                 VALUES (:pyc_so_phieu, :da_ma, :nv_lap_phieu, :pyc_ngay_nhan_mau, :pyc_trang_thai)";
         return $this->db->prepare($sql)->execute($data);
     }
 
-    public function taoSoPhieuTuDong($ngay_nhan_mau) {
+    public function taoSoPhieuTuDong($ngay_nhan_mau)
+    {
         // Chuyển ngày thành chuỗi, ví dụ: 2026-03-20 -> 20260320
         $ngay_chuoi = date('Ymd', strtotime($ngay_nhan_mau));
         $prefix = "PYC-" . $ngay_chuoi . "-";
@@ -57,15 +68,48 @@ class PhieuYeuCau {
     }
 
     // Lấy chi tiết 1 phiếu yêu cầu theo ID (pyc_ma)
-    public function getById($id) {
+    public function getById($id)
+    {
         $sql = "SELECT pyc.*, da.da_ten, da.da_diachi, nv.nv_ten 
                 FROM phieu_yeu_cau pyc
                 LEFT JOIN du_an da ON pyc.da_ma = da.da_ma
                 LEFT JOIN nhan_vien nv ON pyc.nv_lap_phieu = nv.nv_ma
                 WHERE pyc.pyc_ma = :id";
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
+    }
+
+    // 1. Lấy chi tiết 1 phiếu để hiện lên form sửa
+    public function getChiTietPhieu($pyc_ma)
+    {
+        $sql = "SELECT * FROM phieu_yeu_cau WHERE pyc_ma = :pyc_ma";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['pyc_ma' => $pyc_ma]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    // 2. Cập nhật thông tin phiếu
+    public function updatePhieu($pyc_ma, $da_ma, $ngay_nhan, $trang_thai)
+    {
+        $sql = "UPDATE phieu_yeu_cau 
+                SET da_ma = :da_ma, pyc_ngay_nhan_mau = :ngay, pyc_trang_thai = :trang_thai 
+                WHERE pyc_ma = :pyc_ma";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            'da_ma' => $da_ma,
+            'ngay' => $ngay_nhan,
+            'trang_thai' => $trang_thai,
+            'pyc_ma' => $pyc_ma
+        ]);
+    }
+
+    // 3. Xóa phiếu (CSDL sẽ tự xóa cascade các mẫu liên quan)
+    public function deletePhieu($pyc_ma)
+    {
+        $sql = "DELETE FROM phieu_yeu_cau WHERE pyc_ma = :pyc_ma";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['pyc_ma' => $pyc_ma]);
     }
 }

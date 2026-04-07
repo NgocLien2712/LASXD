@@ -27,6 +27,15 @@ class PhieuYeuCauController extends BaseController
             'danhSachDuAn' => $danhSachDuAn, // --- TRUYỀN RA VIEW Ở ĐÂY ---
             'keyword' => $keyword
         ]);
+        // --- 3 DÒNG HIỂN THỊ LỖI ---
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+        // ---------------------------
+
+        $this->checkAuth();
+        $keyword = $_GET['keyword'] ?? '';
+        // ... code cũ của bạn
     }
 
     public function store()
@@ -296,5 +305,57 @@ class PhieuYeuCauController extends BaseController
             'phieu' => $phieu,
             'danhSachMau' => $danhSachMau
         ]);
+    }
+
+    
+    // Hiển thị form sửa phiếu
+    public function sua()
+    {
+        $this->checkAuth();
+        $id = $_GET['id'] ?? null;
+        if (!$id) die('Lỗi: Không tìm thấy mã phiếu.');
+
+        $pycModel = new \App\Models\PhieuYeuCau();
+        $phieu = $pycModel->getChiTietPhieu($id);
+
+        // Giả sử bạn có hàm lấy danh sách dự án để đổ vào thẻ <select>
+        $duAnModel = new \App\Models\DuAn(); 
+        $danhSachDuAn = $duAnModel->getAll(); 
+
+        return $this->render('phieu-yeu-cau/sua', [
+            'phieu' => $phieu,
+            'danhSachDuAn' => $danhSachDuAn
+        ]);
+    }
+
+    // Xử lý lưu dữ liệu khi submit form sửa
+    public function luuSua()
+    {
+        $this->checkAuth();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $pyc_ma = $_POST['pyc_ma'] ?? null;
+            $da_ma = $_POST['da_ma'] ?? null;
+            $ngay_nhan = $_POST['pyc_ngay_nhan_mau'] ?? null;
+            $trang_thai = $_POST['pyc_trang_thai'] ?? null;
+
+            $pycModel = new \App\Models\PhieuYeuCau();
+            $pycModel->updatePhieu($pyc_ma, $da_ma, $ngay_nhan, $trang_thai);
+
+            header('Location: /phieu-yeu-cau?msg=edit_success');
+            exit;
+        }
+    }
+
+    // Xử lý xóa phiếu
+    public function xoa()
+    {
+        $this->checkAuth();
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $pycModel = new \App\Models\PhieuYeuCau();
+            $pycModel->deletePhieu($id);
+        }
+        header('Location: /phieu-yeu-cau?msg=delete_success');
+        exit;
     }
 }

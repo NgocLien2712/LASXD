@@ -42,7 +42,7 @@ if (!empty($danhSach)) {
                     <thead class="table-light text-center">
                         <tr>
                             <th style="width: 12%">Mã Phiếu</th>
-                            <th style="width: 25%">Tên công trình</th>
+                            <th style="width: 25%">Tên Dự Án</th>
                             <th style="width: 20%">Vật liệu thí nghiệm</th>
                             <th style="width: 15%">Người lập</th>
                             <th style="width: 15%">Ngày nhận</th>
