@@ -100,6 +100,10 @@ $router->get('/ket-qua', '\App\Controllers\KetQuaController@index');
 $router->get('/ket-qua/nhap', '\App\Controllers\KetQuaController@nhapKetQua');
 $router->post('/ket-qua/luu', '\App\Controllers\KetQuaController@luuKetQua');
 $router->get('/ket-qua/in', '\App\Controllers\KetQuaController@inKetQua');
+$router->get('/ket-qua/duyet', '\App\Controllers\KetQuaController@duyetPhieu');
+$router->get('/ket-qua/nhap', '\App\Controllers\KetQuaController@nhapKetQua');
+$router->get('/ket-qua/xem', '\App\Controllers\KetQuaController@xem');
+$router->get('/ket-qua/duyet', '\App\Controllers\KetQuaController@duyetPhieu');
 
 // 5. Chạy Router
 $router->run();
