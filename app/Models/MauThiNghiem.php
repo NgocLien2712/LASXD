@@ -7,7 +7,6 @@ class MauThiNghiem extends BaseModel
 
     public function getByPhieuId($pyc_ma)
     {
-        // Chú ý: Đã bổ sung cl.lvl_ma vào danh sách SELECT
         $sql = "SELECT mtn.*, cl.lvl_ma, lvl.lvl_ten AS mtn_ten, cl.cl_ten AS mtn_quy_cach
                 FROM mau_thi_nghiem mtn
                 JOIN chung_loai cl ON mtn.cl_ma = cl.cl_ma
@@ -20,7 +19,6 @@ class MauThiNghiem extends BaseModel
 
     public function insert($data)
     {
-        // Đã bỏ lvl_ma
         $sql = "INSERT INTO mau_thi_nghiem (pyc_ma, cl_ma, mtn_so_luong, mtn_ngay_lay, mtn_ghi_chu)
                 VALUES (:pyc_ma, :cl_ma, :mtn_so_luong, :mtn_ngay_lay, :mtn_ghi_chu)";
         $stmt = $this->db->prepare($sql);
@@ -36,7 +34,6 @@ class MauThiNghiem extends BaseModel
     // Cập nhật thông tin mẫu thí nghiệm
     public function update($data)
     {
-        // Đã bỏ lvl_ma
         $sql = "UPDATE mau_thi_nghiem 
                 SET cl_ma = :cl_ma, mtn_so_luong = :mtn_so_luong, 
                     mtn_ngay_lay = :mtn_ngay_lay, mtn_ghi_chu = :mtn_ghi_chu
@@ -51,7 +48,7 @@ class MauThiNghiem extends BaseModel
         ]);
     }
 
-    // Xóa mẫu thí nghiệm (sẽ tự động xóa luôn các phép thử bên trong nhờ ON DELETE CASCADE)
+    // Xóa mẫu thí nghiệm (sẽ tự động xóa luôn các phép thử bên trong do có ràng buộc khóa ngoại)
     public function delete($id)
     {
         $stmt = $this->db->prepare("DELETE FROM mau_thi_nghiem WHERE mtn_ma = :id");

@@ -1,6 +1,6 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 <?php
-$currentPage = 'nhan-vien'; // Để Sidebar làm sáng menu này lên
+$currentPage = 'nhan-vien';
 include __DIR__ . '/../layouts/sidebar.php';
 ?>
 

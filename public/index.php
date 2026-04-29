@@ -58,12 +58,9 @@ $router->get('/phieu-yeu-cau', '\App\Controllers\PhieuYeuCauController@index');
 $router->get('/phieu-yeu-cau/tao-moi', '\App\Controllers\PhieuYeuCauController@create');
 $router->post('/phieu-yeu-cau/luu', '\App\Controllers\PhieuYeuCauController@store');
 $router->get('/phieu-yeu-cau/xem', '\App\Controllers\PhieuYeuCauController@show');
-
-// --- THÊM 3 DÒNG NÀY ĐỂ XỬ LÝ SỬA / XÓA PHIẾU YÊU CẦU ---
 $router->get('/phieu-yeu-cau/sua', '\App\Controllers\PhieuYeuCauController@sua');
 $router->post('/phieu-yeu-cau/luu-sua', '\App\Controllers\PhieuYeuCauController@luuSua');
 $router->get('/phieu-yeu-cau/xoa', '\App\Controllers\PhieuYeuCauController@xoa');
-// --------------------------------------------------------
 
 $router->post('/phieu-yeu-cau/luu-mau', '\App\Controllers\PhieuYeuCauController@luuMau');
 $router->post('/phieu-yeu-cau/luu-phep-thu', '\App\Controllers\PhieuYeuCauController@luuPhepThu');

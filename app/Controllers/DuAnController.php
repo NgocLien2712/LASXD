@@ -14,15 +14,18 @@ class DuAnController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $duAnModel = new DuAn();
 
-            // 1. Lưu thông tin Dự án
+            // 1. Lấy mã dự án chuỗi tự động
+            $da_ma_tu_dong = $duAnModel->getNextMaDuAn();
+
+            // 2. Lưu thông tin Dự án và lấy về ID dạng số nguyên (VD: 5)
             $da_ma = $duAnModel->insertProject(
-                $_POST['da_ma_hieu'],
+                $da_ma_tu_dong,
                 $_POST['da_ten'],
                 $_POST['da_diachi'],
                 $_POST['da_ngay_bat_dau']
             );
 
-            // 2. Danh sách các vai trò được gửi từ Form
+            // 3. Danh sách các vai trò được gửi từ Form
             $roles = [
                 'Ban quản lý dự án' => $_POST['dv_bqlda'] ?? '',
                 'Nhà thầu thi công' => $_POST['dv_nhathautc'] ?? '',
@@ -32,7 +35,7 @@ class DuAnController extends BaseController
                 'Nhà thầu phụ'      => $_POST['dv_nhathauphu'] ?? ''
             ];
 
-            // 3. Lưu từng vai trò (nếu có chọn) vào bảng trung gian
+            // 4. Lưu từng vai trò vào bảng trung gian
             foreach ($roles as $vai_tro => $dv_ma) {
                 if (!empty($dv_ma)) {
                     $duAnModel->insertProjectRole($da_ma, $dv_ma, $vai_tro);
@@ -55,10 +58,13 @@ class DuAnController extends BaseController
         $danhSachDuAn = $duAnModel->getAllWithNhaThau($keyword);
         $danhSachDonVi = $donViModel->getAll();
 
+        $nextMaDuAn = $duAnModel->getNextMaDuAn();
+
         return $this->render('du-an/index', [
             'danhSachDuAn' => $danhSachDuAn,
             'danhSachDonVi' => $danhSachDonVi,
-            'keyword' => $keyword
+            'keyword' => $keyword,
+            'nextMaDuAn' => $nextMaDuAn
         ]);
     }
 
@@ -92,8 +98,8 @@ class DuAnController extends BaseController
             exit;
         }
 
-        $roles = $duAnModel->getRolesByProjectId($id); // Lấy các đơn vị đã gán
-        $danhSachDonVi = $donViModel->getAll(); // Danh sách để đổ vào <select>
+        $roles = $duAnModel->getRolesByProjectId($id); 
+        $danhSachDonVi = $donViModel->getAll(); 
 
         return $this->render('du-an/edit', [
             'duAn' => $duAn,
@@ -113,7 +119,7 @@ class DuAnController extends BaseController
                 // 1. Cập nhật thông tin cơ bản
                 $duAnModel->updateProject(
                     $da_ma,
-                    $_POST['da_ma_hieu'],
+                    $_POST['da_ma_hieu'] ?? $da_ma, // Giữ nguyên mã hoặc lấy form
                     $_POST['da_ten'],
                     $_POST['da_diachi'],
                     $_POST['da_ngay_bat_dau']
@@ -141,5 +147,18 @@ class DuAnController extends BaseController
             header('Location: /du-an');
             exit;
         }
+    }
+
+    public function create()
+    {
+        $this->checkAuth();
+
+        $duAnModel = new \App\Models\DuAn();
+
+        // Lấy mã dự án tự động tăng
+        $nextMaDuAn = $duAnModel->getNextMaDuAn();
+
+        // Truyền biến $nextMaDuAn sang View (create.php)
+        require __DIR__ . '/../../views/du_an/create.php';
     }
 }

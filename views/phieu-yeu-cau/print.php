@@ -5,7 +5,6 @@
     <title><?= $title ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Thiết lập nền xám cho chế độ xem trên Web để làm nổi bật tờ giấy A4 */
         body { 
             background-color: #f0f2f5; 
             font-family: "Times New Roman", Times, serif; 
@@ -13,7 +12,6 @@
             padding: 0;
         }
 
-        /* Thanh công cụ xem trước */
         .preview-toolbar {
             background: #343a40;
             padding: 10px;
@@ -24,7 +22,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* Thiết lập khung trang A4 */
         .page-a4 {
             width: 210mm;
             min-height: 297mm;
@@ -35,7 +32,6 @@
             color: #000;
         }
 
-        /* Kẻ bảng đen đậm để in ra cho rõ */
         .table-bordered th, .table-bordered td {
             border: 1px solid #000 !important;
             padding: 8px;
@@ -45,15 +41,14 @@
         .header-title { font-size: 16pt; font-weight: bold; }
         .info-section p { margin-bottom: 5px; font-size: 13pt; }
 
-        /* CẤU HÌNH KHI IN THỰC TẾ */
         @media print {
             body { background: none; }
-            .preview-toolbar { display: none !important; } /* Ẩn thanh công cụ khi in */
+            .preview-toolbar { display: none !important; }
             .page-a4 {
                 margin: 0;
                 box-shadow: none;
                 width: 100%;
-                padding: 10mm; /* Giảm lề một chút khi in thực tế */
+                padding: 10mm;
             }
             @page {
                 size: A4;

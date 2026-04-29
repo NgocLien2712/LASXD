@@ -9,7 +9,7 @@ class DanhMucController extends BaseController {
         $this->checkAuth();
         $db = (new BaseModel())->getDb();
         
-        // Lấy danh sách Nhóm vật liệu (VD: Bê tông, Cát, Đá...)
+        // Lấy danh sách Nhóm vật liệu
         $nhomList = $db->query("SELECT * FROM nhom_vat_lieu ORDER BY nvl_ma DESC")->fetchAll();
         
         // Lấy danh sách Vật liệu kèm theo Tên nhóm của nó

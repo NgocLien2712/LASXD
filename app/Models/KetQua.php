@@ -216,10 +216,6 @@ public function getChiTietPhieu($pyc_ma)
         $stmt->execute([$trang_thai]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
-
-    /**
-     * Lấy danh sách mẫu + phép thử + KẾT QUẢ của từng phép thử
-     */
     /**
      * Lấy danh sách mẫu + phép thử + KẾT QUẢ của từng phép thử
      */
@@ -234,9 +230,8 @@ public function getChiTietPhieu($pyc_ma)
         $stmtMau->execute([$pyc_ma]);
         $danhSachMau = $stmtMau->fetchAll(\PDO::FETCH_ASSOC);
 
-        // 2. Với mỗi mẫu, lấy các phép thử VÀ KẾT QUẢ tương ứng
+        // 2. Lấy các phép thử VÀ KẾT QUẢ tương ứng
         foreach ($danhSachMau as &$mau) {
-            // Đã bổ sung lấy kq.kq_du_lieu_tho để in số liệu ra giấy
             $sqlPT = "SELECT pt.pt_ma, pt.pt_ten AS ten_phep_thu, kq.kq_ket_luan, kq.kq_du_lieu_tho
                       FROM chi_dinh_phep_thu cdpt
                       JOIN phep_thu pt ON cdpt.pt_ma = pt.pt_ma
@@ -246,7 +241,7 @@ public function getChiTietPhieu($pyc_ma)
             $stmtPT->execute([$mau['mtn_ma']]);
             $mau['danh_sach_phep_thu'] = $stmtPT->fetchAll(\PDO::FETCH_ASSOC);
 
-            // 3. DUYỆT LẤY CẤU HÌNH TRƯỜNG (BẢN TRƯỚC BỊ THIẾU ĐOẠN NÀY)
+            // 3. DUYỆT LẤY CẤU HÌNH TRƯỜNG CHO TỪNG PHÉP THỬ
             foreach ($mau['danh_sach_phep_thu'] as &$pt) {
                 $sqlTruong = "SELECT cht_ten_hien_thi, cht_ten_bien 
                               FROM cau_hinh_truong 
@@ -260,9 +255,7 @@ public function getChiTietPhieu($pyc_ma)
         return $danhSachMau;
     }
     
-    /**
-     * Cập nhật trạng thái phiếu thành Đã ban hành và lưu thông tin người duyệt
-     */
+    // Cập nhật trạng thái phiếu thành Đã ban hành và lưu thông tin người duyệt
     public function xacNhanDuyetPhieu($pyc_ma, $nguoi_duyet_id, $ngay_duyet)
     {
         $sql = "UPDATE phieu_yeu_cau 

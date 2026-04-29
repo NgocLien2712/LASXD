@@ -3,7 +3,7 @@
 $currentPage = 'ket-qua';
 include __DIR__ . '/../layouts/sidebar.php';
 
-// === HÀM GOM NHÓM DỮ LIỆU DÙNG CHUNG CHO CẢ 3 TAB ===
+// HÀM GOM NHÓM DỮ LIỆU DÙNG CHUNG CHO CẢ 3 TAB
 $gomNhomPhieu = function ($danhSach) {
     $ketQua = [];
     if (!empty($danhSach)) {
@@ -16,10 +16,10 @@ $gomNhomPhieu = function ($danhSach) {
                     'da_ten'            => $item['da_ten'] ?? 'Chưa xác định',
                     'nv_ten'            => $item['nv_ten'] ?? 'N/A',
                     'pyc_ngay_nhan_mau' => $item['pyc_ngay_nhan_mau'] ?? null,
-                    'vat_lieu'          => [] // Mảng chứa các loại vật liệu
+                    'vat_lieu'          => [] 
                 ];
             }
-            // Thêm tên vật liệu vào mảng (nếu có và chưa bị trùng)
+            // Thêm tên vật liệu vào mảng nếu chưa tồn tại
             $tenVatLieu = $item['cl_ten'] ?? null;
             if ($tenVatLieu && !in_array($tenVatLieu, $ketQua[$pyc_ma]['vat_lieu'])) {
                 $ketQua[$pyc_ma]['vat_lieu'][] = $tenVatLieu;
@@ -223,7 +223,6 @@ $gomNhomDaBanHanh = $gomNhomPhieu($danhSachDaBanHanh ?? []);
 
 <script>
     $(document).ready(function() {
-        // Áp dụng DataTable cho TẤT CẢ các bảng có class .myTable
         $('.myTable').DataTable({
             language: {
                 "sLengthMenu": "Xem _MENU_ dòng",
@@ -237,7 +236,7 @@ $gomNhomDaBanHanh = $gomNhomPhieu($danhSachDaBanHanh ?? []);
             },
             "order": [
                 [0, "desc"]
-            ] // Sắp xếp mã phiếu mới nhất lên đầu
+            ]
         });
     });
 </script>

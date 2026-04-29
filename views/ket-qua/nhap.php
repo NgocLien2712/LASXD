@@ -120,7 +120,6 @@
                                                 <?php if (!empty($pt['danh_sach_truong'])): ?>
                                                     <?php
                                                     $soCotDaiLuong = count($pt['danh_sach_truong']);
-                                                    // Giải mã dữ liệu thô cũ để hiển thị lại nếu đang Sửa
                                                     $duLieuTho = json_decode($pt['kq_du_lieu_tho'] ?? '{}', true);
                                                     ?>
 

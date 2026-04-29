@@ -9,16 +9,14 @@ class NhanVien {
         $this->db = Database::getConnection();
     }
 
-    // Thêm tham số $keyword và $cv_ma vào hàm
     public function getAll($keyword = '', $cv_ma = '') {
         $sql = "SELECT nv.*, cv.cv_ten 
                 FROM nhan_vien nv 
                 LEFT JOIN chuc_vu cv ON nv.cv_ma = cv.cv_ma 
-                WHERE 1=1"; // WHERE 1=1 là mẹo để nối thêm các điều kiện AND phía sau cho dễ
+                WHERE 1=1";
         
         $params = [];
 
-        // Nếu có nhập từ khóa tìm kiếm (Tìm theo Tên, Tên ĐN hoặc SĐT)
         if (!empty($keyword)) {
             $sql .= " AND (nv.nv_ten ILIKE :keyword OR nv.nv_sdt ILIKE :keyword OR nv.nv_tendn ILIKE :keyword)";
             $params['keyword'] = '%' . $keyword . '%';
@@ -37,7 +35,6 @@ class NhanVien {
         return $stmt->fetchAll();
     }
 
-    // Lấy danh sách chức vụ để đổ vào thẻ <select>
     public function getAllChucVu() {
         try {
             return $this->db->query("SELECT * FROM chuc_vu ORDER BY cv_ma ASC")->fetchAll();
@@ -73,7 +70,7 @@ class NhanVien {
                     nv_ten = :nv_ten, nv_sdt = :nv_sdt, cv_ma = :cv_ma WHERE nv_ma = :id";
         }
         
-        $data['id'] = $id; // Thêm id vào mảng data để truyền vào execute
+        $data['id'] = $id;
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($data);
     }

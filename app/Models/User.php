@@ -9,9 +9,7 @@ class User extends BaseModel {
         $this->db = Database::getConnection();
     }
 
-    /**
-     * Tìm nhân viên theo tên đăng nhập (nv_tendn)
-     */
+    // Tìm nhân viên theo tên đăng nhập (nv_tendn)
     public function findByUsername($username) {
         $stmt = $this->db->prepare(
             "SELECT nv.*, cv.cv_ten AS role_name
@@ -23,9 +21,7 @@ class User extends BaseModel {
         return $stmt->fetch();
     }
 
-    /**
-     * Lấy danh sách tất cả nhân viên kèm tên chức vụ
-     */
+    //  Lấy danh sách tất cả nhân viên kèm tên chức vụ
     public function getAll() {
         $stmt = $this->db->query(
             "SELECT nv.*, cv.cv_ten AS role_name

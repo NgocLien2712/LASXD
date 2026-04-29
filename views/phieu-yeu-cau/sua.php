@@ -71,7 +71,6 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
 
 <script>
     $(document).ready(function() {
-        // Tích hợp thư viện tìm kiếm dự án như lúc tạo mới
         $('#select-du-an').select2({
             theme: 'bootstrap-5',
             width: '100%'

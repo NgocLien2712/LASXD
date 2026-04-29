@@ -2,7 +2,7 @@
 namespace App\Models;
 
 class DonVi extends BaseModel {
-    // Lấy danh sách đơn vị cơ bản (để đổ vào thẻ <select> lúc thêm Dự án)
+    // Lấy danh sách đơn vị cơ bản
     public function getAll() {
         return $this->db->query("SELECT * FROM don_vi ORDER BY dv_ten ASC")->fetchAll();
     }
@@ -23,7 +23,7 @@ public function getAllWithProjects($keyword = '') {
             FROM don_vi dv ";
     
     $params = [];
-    // Nếu có từ khóa, thêm điều kiện tìm kiếm bằng ILIKE (không phân biệt hoa thường)
+    // Nếu có từ khóa, thêm điều kiện tìm kiếm
     if (!empty($keyword)) {
         $sql .= " WHERE dv.dv_ten ILIKE :keyword ";
         $params['keyword'] = '%' . $keyword . '%';
@@ -37,7 +37,6 @@ public function getAllWithProjects($keyword = '') {
 
 // Thêm hàm Xóa đơn vị
 public function delete($id) {
-    // Vì đã set ON DELETE CASCADE trong CSDL, xóa đơn vị sẽ tự xóa các liên kết trong bảng trung gian
     $stmt = $this->db->prepare("DELETE FROM don_vi WHERE dv_ma = :id");
     return $stmt->execute(['id' => $id]);
 }

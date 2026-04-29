@@ -17,7 +17,6 @@
             overflow-x: hidden;
         }
 
-        /* Chỉnh lại Sidebar để khớp với Header mới */
         #sidebar {
             min-width: 250px;
             max-width: 250px;

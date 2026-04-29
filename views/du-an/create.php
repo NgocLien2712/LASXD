@@ -17,9 +17,17 @@
         <div class="bg-white p-4 shadow-sm rounded-3 border-top border-primary border-3" style="max-width: 800px; margin: 0 auto;">
             <form action="/du-an/luu" method="POST">
                 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Tên Dự án / Công trình <span class="text-danger">*</span></label>
-                    <input type="text" name="da_ten" class="form-control" placeholder="Nhập tên công trình..." required>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Mã Dự Án <span class="text-danger">*</span></label>
+                        <input type="text" name="da_ma" class="form-control bg-light text-danger fw-bold" value="<?= htmlspecialchars($nextMaDuAn ?? '') ?>" required readonly>
+                        <small class="text-muted fst-italic">Hệ thống tự động sinh mã.</small>
+                    </div>
+
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label fw-bold">Tên Dự án / Công trình <span class="text-danger">*</span></label>
+                        <input type="text" name="da_ten" class="form-control" placeholder="Nhập tên công trình..." required>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -57,3 +65,4 @@
 
     </div> 
     <?php include __DIR__ . '/../layouts/footer.php'; ?>
+</div>

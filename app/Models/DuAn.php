@@ -69,8 +69,6 @@ class DuAn extends BaseModel
         $stmt = $this->db->prepare("SELECT dv_ma, vai_tro FROM du_an_don_vi WHERE da_ma = :id");
         $stmt->execute(['id' => $id]);
         $result = $stmt->fetchAll();
-
-        // Chuyển mảng thành dạng Key-Value: ['Ban quản lý dự án' => 1, 'Nhà thầu thi công' => 5...]
         $roles = [];
         foreach ($result as $row) {
             $roles[$row['vai_tro']] = $row['dv_ma'];
@@ -116,5 +114,27 @@ class DuAn extends BaseModel
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['da_ma' => $da_ma]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Tự động sinh Mã Dự Án mới (VD: DA001, DA002...)
+     */
+    public function getNextMaDuAn()
+    {
+        $sql = "SELECT da_ma_hieu FROM du_an 
+                WHERE da_ma_hieu LIKE 'DA%' 
+                ORDER BY LENGTH(da_ma_hieu) DESC, da_ma_hieu DESC 
+                LIMIT 1";
+        $stmt = $this->db->query($sql);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($row && !empty($row['da_ma_hieu'])) {
+            $soHienTai = (int) substr($row['da_ma_hieu'], 2);
+            $soTiepTheo = $soHienTai + 1;
+            
+            return 'DA' . str_pad($soTiepTheo, 3, '0', STR_PAD_LEFT);
+        }
+        
+        return 'DA001';
     }
 }

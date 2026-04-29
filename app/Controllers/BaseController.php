@@ -9,13 +9,7 @@ class BaseController {
 
     
     protected function checkAuth($allowedRoles = []) {
-    // Tạm thời comment (vô hiệu hóa) các dòng kiểm tra
-    /*
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: /login");
-        exit();
-    }
-    */
-    return true; // Luôn cho qua
+
+    return true;
 }
 }

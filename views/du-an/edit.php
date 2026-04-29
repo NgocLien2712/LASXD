@@ -17,7 +17,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-3">
                             <label class="form-label fw-bold">Mã Dự Án</label>
-                            <input type="text" name="da_ma_hieu" class="form-control" value="<?= htmlspecialchars($duAn['da_ma_hieu'] ?? '') ?>">
+                            <input type="text" name="da_ma_hieu" class="form-control bg-light" value="<?= htmlspecialchars($duAn['da_ma_hieu'] ?? '') ?>" readonly>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Tên Dự Án/Công Trình <span class="text-danger">*</span></label>
@@ -45,7 +45,6 @@
                             'dv_nhathauphu' => 'Nhà thầu phụ'
                         ];
                         foreach ($rolesMap as $inputName => $dbRoleName): 
-                            // Kiểm tra xem dự án này đã gán đơn vị nào cho vai trò này chưa
                             $selectedDvMa = $roles[$dbRoleName] ?? null;
                         ?>
                             <div class="col-md-6">

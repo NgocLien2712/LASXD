@@ -11,7 +11,6 @@ class Backup {
         $fileName = "backup_" . date("Y-m-d_H-i-s") . ".sql";
         $filePath = __DIR__ . "/../../backup/" . $fileName;
 
-        // Lệnh thực thi mysqldump (Đảm bảo máy bạn đã cài MySQL)
         $command = "mysqldump -h $host -u $user ".($pass ? "-p$pass" : "")." $db > $filePath";
         
         system($command, $output);

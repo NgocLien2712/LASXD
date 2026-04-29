@@ -6,9 +6,8 @@ use App\Models\KetQua;
 
 class KetQuaController extends BaseController
 {
-    /**
-     * 1. Trang danh sách quản lý kết quả (/ket-qua)
-     */
+    // 1. Trang danh sách quản lý kết quả (/ket-qua)
+
     public function index()
     {
         $this->checkAuth();
@@ -32,9 +31,8 @@ class KetQuaController extends BaseController
         ]);
     }
 
-    /**
-     * 2. Hiển thị form nhập số liệu thô (/ket-qua/nhap)
-     */
+    // 2. Hiển thị form nhập số liệu thô (/ket-qua/nhap)
+
     public function nhapKetQua()
     {
         $this->checkAuth();
@@ -59,9 +57,8 @@ class KetQuaController extends BaseController
         ]);
     }
 
-    /**
-     * 3. Xử lý lưu số liệu thô và kết luận vào Database (/ket-qua/luu)
-     */
+    // 3. Xử lý lưu số liệu thô và kết luận vào Database (/ket-qua/luu)
+
     public function luuKetQua()
     {
         $this->checkAuth();
@@ -119,9 +116,7 @@ class KetQuaController extends BaseController
         }
     }
 
-    /**
-     * 4. Xử lý Duyệt phiếu (Chuyển từ Chờ duyệt -> Đã ban hành)
-     */
+    //  4. Xử lý Duyệt phiếu (Chuyển từ Chờ duyệt -> Đã ban hành)
     public function duyetPhieu()
     {
         $this->checkAuth();
@@ -142,9 +137,7 @@ class KetQuaController extends BaseController
         exit;
     }
 
-    /**
-     * 5. Hiển thị trang in kết quả (/ket-qua/xem?pyc_ma=...)
-     */
+    // 5. Hiển thị trang in kết quả (/ket-qua/xem?pyc_ma=...)
     public function xem()
     {
         $this->checkAuth();

@@ -3,19 +3,18 @@
 $currentPage = 'phieu-yeu-cau';
 include __DIR__ . '/../layouts/sidebar.php';
 
-// === GOM NHÓM DỮ LIỆU THEO PHIẾU VÀ LỌC VẬT LIỆU ===
+// GOM NHÓM DỮ LIỆU THEO PHIẾU VÀ LỌC VẬT LIỆU
 $danhSachGomNhom = [];
 if (!empty($danhSachPYC)) {
     foreach ($danhSachPYC as $pyc) {
         $pyc_ma = $pyc['pyc_ma'];
 
-        // Nếu mã phiếu này chưa có trong mảng thì tạo mới dòng
+
         if (!isset($danhSachGomNhom[$pyc_ma])) {
-            $danhSachGomNhom[$pyc_ma] = $pyc; // Lấy toàn bộ thông tin gốc của phiếu
-            $danhSachGomNhom[$pyc_ma]['vat_lieu'] = []; // Tạo mảng rỗng chứa tên vật liệu
+            $danhSachGomNhom[$pyc_ma] = $pyc;
+            $danhSachGomNhom[$pyc_ma]['vat_lieu'] = [];
         }
 
-        // Thêm tên vật liệu vào mảng (nếu có và chưa bị trùng)
         $tenVatLieu = $pyc['cl_ten'] ?? null;
         if ($tenVatLieu && !in_array($tenVatLieu, $danhSachGomNhom[$pyc_ma]['vat_lieu'])) {
             $danhSachGomNhom[$pyc_ma]['vat_lieu'][] = $tenVatLieu;
@@ -75,13 +74,13 @@ if (!empty($danhSachPYC)) {
                                     <td class="text-center"><?= date('d/m/Y', strtotime($pyc['pyc_ngay_nhan_mau'])) ?></td>
 
                                     <td class="text-center">
-                                        <?php 
-                                            $trangThai = $pyc['trang_thai_mau'] ?? $pyc['pyc_trang_thai'] ?? 'Mới tạo';
-                                            $badgeClass = 'bg-secondary';
-                                            
-                                            if (strpos($trangThai, 'Đủ') !== false || $trangThai == 'Đã hoàn thành') $badgeClass = 'bg-success';
-                                            if (strpos($trangThai, 'Đang') !== false || $trangThai == 'Đang chờ mẫu') $badgeClass = 'bg-warning text-dark';
-                                            if (strpos($trangThai, 'Thiếu') !== false || $trangThai == 'Hủy') $badgeClass = 'bg-danger';
+                                        <?php
+                                        $trangThai = $pyc['trang_thai_mau'] ?? $pyc['pyc_trang_thai'] ?? 'Mới tạo';
+                                        $badgeClass = 'bg-secondary';
+
+                                        if (strpos($trangThai, 'Đủ') !== false || $trangThai == 'Đã hoàn thành') $badgeClass = 'bg-success';
+                                        if (strpos($trangThai, 'Đang') !== false || $trangThai == 'Đang chờ mẫu') $badgeClass = 'bg-warning text-dark';
+                                        if (strpos($trangThai, 'Thiếu') !== false || $trangThai == 'Hủy') $badgeClass = 'bg-danger';
                                         ?>
                                         <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($trangThai) ?></span>
                                     </td>
@@ -161,7 +160,6 @@ if (!empty($danhSachPYC)) {
 
 <script>
     $(document).ready(function() {
-        // Khởi tạo Select2 cho Modal
         if ($.fn.select2) {
             $('#select-du-an-modal').select2({
                 theme: 'bootstrap-5',
@@ -170,7 +168,6 @@ if (!empty($danhSachPYC)) {
             });
         }
 
-        // Kích hoạt tính năng Tìm kiếm & Sắp xếp cho bảng
         $('.myTable').DataTable({
             language: {
                 "sLengthMenu": "Xem _MENU_ dòng",
@@ -182,7 +179,9 @@ if (!empty($danhSachPYC)) {
                     "sNext": "Sau"
                 }
             },
-            "order": [[ 0, "desc" ]] // Tự động sắp xếp Mã phiếu mới nhất lên trên cùng
+            "order": [
+                [0, "desc"]
+            ]
         });
     });
 </script>

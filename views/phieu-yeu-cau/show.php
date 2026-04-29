@@ -265,7 +265,6 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        // --- 1 & 2. AJAX LOAD CHỦNG LOẠI (Cho Thêm và Sửa) ---
         const selectLvl = document.getElementById('select_lvl');
         const selectCl = document.getElementById('select_cl');
         if (selectLvl && selectCl) {
@@ -287,7 +286,6 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                 let lvl_ma_cu = this.getAttribute('data-lvl');
                 let cl_ma_cu = this.getAttribute('data-cl');
 
-                // ĐÃ SỬA: Chống lỗi trắng Select Box khi thiếu dữ liệu
                 if (lvl_ma_cu && lvl_ma_cu.trim() !== "") {
                     selectLvlEdit.value = lvl_ma_cu;
                 } else {
@@ -330,7 +328,7 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
             btn.addEventListener('click', function() {
                 let mtn_ma = this.getAttribute('data-mtn-ma');
                 let mtn_ten = this.getAttribute('data-mtn-ten');
-                let lvl_ma = this.getAttribute('data-lvl-ma'); // Lấy loại vật liệu của mẫu này
+                let lvl_ma = this.getAttribute('data-lvl-ma'); 
 
                 inputMtnMa.value = mtn_ma;
                 displayMtnTen.textContent = mtn_ten;
@@ -339,7 +337,6 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                 checklistContainer.innerHTML = '<div class="text-center text-muted py-3"><div class="spinner-border spinner-border-sm text-success"></div> Đang tải dữ liệu...</div>';
 
                 // Gọi AJAX để lấy danh sách phép thử
-                // Tránh lỗi fetch undefined nếu thiếu lvl_ma
                 if (!lvl_ma || lvl_ma.trim() === '') {
                     checklistContainer.innerHTML = '<div class="text-danger fst-italic py-3">Mẫu chưa được cấu hình loại vật liệu.</div>';
                     return;

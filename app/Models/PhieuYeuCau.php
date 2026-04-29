@@ -7,10 +7,8 @@ use App\Core\Database;
 class PhieuYeuCau
 {
     protected $db;
-
     public function __construct()
     {
-        // Lưu ý: Dùng getConnection() theo cấu trúc Core của bạn
         $this->db = Database::getConnection();
     }
 
@@ -55,15 +53,12 @@ class PhieuYeuCau
         $phieu_cuoi = $stmt->fetchColumn();
 
         if ($phieu_cuoi) {
-            // Cắt lấy 3 số cuối và cộng thêm 1. VD: "001" -> 2
             $so_cuoi = (int) substr($phieu_cuoi, -3);
             $so_moi = $so_cuoi + 1;
         } else {
             // Nếu chưa có phiếu nào trong ngày, bắt đầu là 1
             $so_moi = 1;
         }
-
-        // Ghép lại thành chuỗi, hàm str_pad giúp thêm số 0 đằng trước cho đủ 3 số
         return $prefix . str_pad($so_moi, 3, '0', STR_PAD_LEFT);
     }
 
@@ -105,7 +100,7 @@ class PhieuYeuCau
         ]);
     }
 
-    // 3. Xóa phiếu (CSDL sẽ tự xóa cascade các mẫu liên quan)
+    // 3. Xóa phiếu yêu cầu (sẽ tự động xóa luôn mẫu thí nghiệm và phép thử bên trong do có ràng buộc khóa ngoại với ON DELETE CASCADE)
     public function deletePhieu($pyc_ma)
     {
         $sql = "DELETE FROM phieu_yeu_cau WHERE pyc_ma = :pyc_ma";

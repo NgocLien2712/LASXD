@@ -12,7 +12,6 @@ class Database
     public static function getConnection()
     {
         if (self::$instance === null) {
-            // Load biến môi trường từ file .env
             $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
             $dotenv->load();
 

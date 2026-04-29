@@ -1,5 +1,4 @@
 <?php
-// Gọi Model DuAn để lấy danh sách các đơn vị tham gia dự án này
 $cacDonVi = [];
 if (!empty($phieu['da_ma'])) {
     $duAnModel = new \App\Models\DuAn();
@@ -148,7 +147,6 @@ if (!empty($phieu['da_ma'])) {
                     <p class="fw-bold mb-2">Mẫu số <?= $index + 1 ?>: <?= htmlspecialchars($mau['mtn_ten'] ?? $mau['cl_ten'] ?? 'Chưa xác định') ?> (SL: <?= htmlspecialchars($mau['mtn_so_luong'] ?? '....') ?> - <?= htmlspecialchars($mau['mtn_quy_cach'] ?? '......') ?>)</p>
 
                     <?php
-                    // Lấy số lượng viên/mẫu để in số hàng
                     $soLuongVien = (int)($mau['mtn_so_luong'] ?? 3);
                     if ($soLuongVien <= 0) $soLuongVien = 3;
                     ?>
@@ -183,7 +181,7 @@ if (!empty($phieu['da_ma'])) {
                                 <tbody>
                                     <?php if (!empty($pt['danh_sach_truong'])): ?>
                                         <?php 
-                                            // GIẢI MÃ JSON ĐỂ IN SỐ LIỆU ĐÃ NHẬP
+
                                             $duLieuTho = json_decode($pt['kq_du_lieu_tho'] ?? '{}', true); 
                                             
                                             $colspanTrungBinh = 2 + count($pt['danh_sach_truong']);

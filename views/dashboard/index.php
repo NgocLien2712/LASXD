@@ -3,9 +3,6 @@
 $currentPage = 'dashboard';
 include __DIR__ . '/../layouts/sidebar.php';
 
-// =========================================================
-// CODE LẤY SỐ LIỆU THỰC TẾ TỪ DATABASE
-// =========================================================
 $db = (new \App\Models\BaseModel())->getDb();
 
 // 1. Đếm số lượng tổng quan

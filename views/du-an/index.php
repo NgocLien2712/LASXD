@@ -85,9 +85,10 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                 <div class="modal-body">
                     <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">1. Thông tin chung</h6>
                     <div class="row g-3 mb-4">
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold">Mã Dự Án</label>
-                            <input type="text" name="da_ma_hieu" class="form-control" placeholder="VD: DA-001">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Mã Dự Án <span class="text-danger">*</span></label>
+                            <input type="text" name="da_ma" class="form-control bg-light text-danger fw-bold" value="<?= htmlspecialchars($nextMaDuAn ?? '') ?>" required readonly>
+                            <small class="text-muted fst-italic">Hệ thống tự động sinh mã.</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Tên Dự Án/Công Trình <span class="text-danger">*</span></label>
@@ -106,7 +107,6 @@ include __DIR__ . '/../layouts/sidebar.php'; ?>
                     <h6 class="text-success fw-bold mb-3 border-bottom pb-2">2. Chỉ định Đơn vị (Có thể để trống)</h6>
                     <div class="row g-3">
                         <?php
-                        // Mảng chứa các vai trò để render form cho nhanh
                         $roles = [
                             'dv_bqlda' => 'Ban Quản Lý Dự Án',
                             'dv_chudautu' => 'Chủ Đầu Tư',

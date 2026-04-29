@@ -13,10 +13,8 @@ class CauHinhController extends BaseController
         $db = (new BaseModel())->getDb();
 
         $cl_ma = $_GET['cl_ma'] ?? null;
-        $pt_ma = $_GET['pt_ma'] ?? null; // ID của phép thử đang chọn
+        $pt_ma = $_GET['pt_ma'] ?? null;
 
-        // --- BẮT ĐẦU ĐOẠN XỬ LÝ GỘP NHÓM MỚI ---
-        // Câu lệnh SQL chuẩn: Nối 2 bảng để lấy Vật liệu kèm theo Tên Nhóm của nó
         $stmt = $db->query("
             SELECT c.*, COALESCE(n.nvl_ten, 'Chưa phân nhóm') AS ten_nhom 
             FROM chung_loai c 
@@ -25,7 +23,6 @@ class CauHinhController extends BaseController
         ");
         $allVatTuRaw = $stmt->fetchAll();
 
-        // Vòng lặp này tự động nhóm các vật liệu có cùng ten_nhom lại với nhau
         $allVatTuGrouped = [];
         foreach ($allVatTuRaw as $v) {
             $allVatTuGrouped[$v['ten_nhom']][] = $v;
@@ -68,7 +65,7 @@ class CauHinhController extends BaseController
 
         return $this->render('cau-hinh/index', [
             'title' => 'Cấu hình thông số thí nghiệm',
-            'allVatTuGrouped' => $allVatTuGrouped, // Đã đổi biến allVatTu thành allVatTuGrouped
+            'allVatTuGrouped' => $allVatTuGrouped, 
             'vattu' => $vattu,
             'phepThuList' => $phepThuList,
             'currentPhepThu' => $currentPhepThu,
@@ -89,7 +86,7 @@ class CauHinhController extends BaseController
         $pt_don_vi = $_POST['pt_don_vi'] ?? '';
 
         if ($pt_ma == 'new' || empty($pt_ma)) {
-            // Thêm mới phép thử (Dùng RETURNING của PostgreSQL để lấy ID vừa tạo)
+            // Thêm mới phép thử
             $stmt = $db->prepare("INSERT INTO phep_thu (cl_ma, pt_ten, pt_cong_thuc, pt_don_vi) VALUES (?, ?, ?, ?) RETURNING pt_ma");
             $stmt->execute([$cl_ma, $pt_ten, $pt_cong_thuc, $pt_don_vi]);
             $pt_ma = $stmt->fetchColumn();
@@ -103,12 +100,10 @@ class CauHinhController extends BaseController
         }
 
         // Lưu các cấu hình trường (a, b, P...)
-        // Lưu các cấu hình trường (a, b, P...)
         if (!empty($_POST['cht_ten_hien_thi'])) {
             foreach ($_POST['cht_ten_hien_thi'] as $key => $ten) {
-                if (empty(trim($ten))) continue; // Bỏ qua nếu tên rỗng
+                if (empty(trim($ten))) continue;
 
-                // Xử lý giá trị mặc định: Nếu rỗng thì gán bằng null để PostgreSQL không báo lỗi kiểu số
                 $mac_dinh = trim($_POST['cht_mac_dinh'][$key] ?? '');
                 $mac_dinh = ($mac_dinh === '') ? null : $mac_dinh;
 
@@ -118,7 +113,7 @@ class CauHinhController extends BaseController
                     trim($ten),
                     trim($_POST['cht_ten_bien'][$key]),
                     $_POST['cht_kieu_du_lieu'][$key],
-                    $mac_dinh // Truyền biến đã xử lý vào đây
+                    $mac_dinh
                 ]);
             }
         }
